@@ -1,4 +1,7 @@
-﻿namespace ProseTools
+﻿using Microsoft.Office.Tools.Ribbon;
+using System;
+
+namespace ProseTools
 {
     partial class ProseToolsRibbon : Microsoft.Office.Tools.Ribbon.RibbonBase
     {
@@ -35,21 +38,119 @@
         private void InitializeComponent()
         {
             this.tab1 = this.Factory.CreateRibbonTab();
-            this.group1 = this.Factory.CreateRibbonGroup();
+            this.openProseToolsButton = this.Factory.CreateRibbonGroup();
+            this.button1 = this.Factory.CreateRibbonButton();
+            this.character = this.Factory.CreateRibbonGroup();
+            this.characterManagementButton = this.Factory.CreateRibbonButton();
+            this.scanForCharacters = this.Factory.CreateRibbonButton();
+            this.genAI = this.Factory.CreateRibbonGroup();
+            this.genAIDropDown = this.Factory.CreateRibbonDropDown();
+            this.queryGenAIButton = this.Factory.CreateRibbonButton();
+            this.proseGroup = this.Factory.CreateRibbonGroup();
+            this.dropDownProseType = this.Factory.CreateRibbonDropDown();
+            this.startProse = this.Factory.CreateRibbonButton();
+            this.settings = this.Factory.CreateRibbonGroup();
+            this.settingsButton = this.Factory.CreateRibbonButton();
             this.tab1.SuspendLayout();
+            this.openProseToolsButton.SuspendLayout();
+            this.character.SuspendLayout();
+            this.genAI.SuspendLayout();
+            this.proseGroup.SuspendLayout();
+            this.settings.SuspendLayout();
             this.SuspendLayout();
             // 
             // tab1
             // 
             this.tab1.ControlId.ControlIdType = Microsoft.Office.Tools.Ribbon.RibbonControlIdType.Office;
-            this.tab1.Groups.Add(this.group1);
+            this.tab1.Groups.Add(this.openProseToolsButton);
+            this.tab1.Groups.Add(this.character);
+            this.tab1.Groups.Add(this.genAI);
+            this.tab1.Groups.Add(this.proseGroup);
+            this.tab1.Groups.Add(this.settings);
             this.tab1.Label = "ProseTools";
             this.tab1.Name = "tab1";
             // 
-            // group1
+            // openProseToolsButton
             // 
-            this.group1.Label = "group1";
-            this.group1.Name = "group1";
+            this.openProseToolsButton.Items.Add(this.button1);
+            this.openProseToolsButton.Label = "ProseTools";
+            this.openProseToolsButton.Name = "openProseToolsButton";
+            // 
+            // button1
+            // 
+            this.button1.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
+            this.button1.Image = global::ProseTools.Properties.Resources.green_icon_512x512;
+            this.button1.Label = "Open ProseTools";
+            this.button1.Name = "button1";
+            this.button1.ShowImage = true;
+            this.button1.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.button1_Click);
+            // 
+            // character
+            // 
+            this.character.Items.Add(this.characterManagementButton);
+            this.character.Items.Add(this.scanForCharacters);
+            this.character.Label = "Character";
+            this.character.Name = "character";
+            // 
+            // characterManagementButton
+            // 
+            this.characterManagementButton.Label = "Character Management...";
+            this.characterManagementButton.Name = "characterManagementButton";
+            this.characterManagementButton.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.characterManagementButton_Click);
+            // 
+            // scanForCharacters
+            // 
+            this.scanForCharacters.Label = "Scan For Characters...";
+            this.scanForCharacters.Name = "scanForCharacters";
+            this.scanForCharacters.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.scanForCharactersButton_Click);
+            // 
+            // genAI
+            // 
+            this.genAI.Items.Add(this.genAIDropDown);
+            this.genAI.Items.Add(this.queryGenAIButton);
+            this.genAI.Label = "Gen AI";
+            this.genAI.Name = "genAI";
+            // 
+            // genAIDropDown
+            // 
+            this.genAIDropDown.Label = "AI";
+            this.genAIDropDown.Name = "genAIDropDown";
+            // 
+            // queryGenAIButton
+            // 
+            this.queryGenAIButton.Label = "Query...";
+            this.queryGenAIButton.Name = "queryGenAIButton";
+            // 
+            // proseGroup
+            // 
+            this.proseGroup.Items.Add(this.dropDownProseType);
+            this.proseGroup.Items.Add(this.startProse);
+            this.proseGroup.Label = "Prose";
+            this.proseGroup.Name = "proseGroup";
+            // 
+            // dropDownProseType
+            // 
+            this.dropDownProseType.Label = "Type";
+            this.dropDownProseType.Name = "dropDownProseType";
+            // 
+            // startProse
+            // 
+            this.startProse.Label = "Start Prose";
+            this.startProse.Name = "startProse";
+            this.startProse.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.startProse_Click);
+            // 
+            // settings
+            // 
+            this.settings.Items.Add(this.settingsButton);
+            this.settings.Label = "Settings";
+            this.settings.Name = "settings";
+            // 
+            // settingsButton
+            // 
+            this.settingsButton.Image = global::ProseTools.Properties.Resources.gear_settings;
+            this.settingsButton.Label = "Settings...";
+            this.settingsButton.Name = "settingsButton";
+            this.settingsButton.ShowImage = true;
             // 
             // ProseToolsRibbon
             // 
@@ -59,14 +160,49 @@
             this.Load += new Microsoft.Office.Tools.Ribbon.RibbonUIEventHandler(this.ProseToolsRibbon_Load);
             this.tab1.ResumeLayout(false);
             this.tab1.PerformLayout();
+            this.openProseToolsButton.ResumeLayout(false);
+            this.openProseToolsButton.PerformLayout();
+            this.character.ResumeLayout(false);
+            this.character.PerformLayout();
+            this.genAI.ResumeLayout(false);
+            this.genAI.PerformLayout();
+            this.proseGroup.ResumeLayout(false);
+            this.proseGroup.PerformLayout();
+            this.settings.ResumeLayout(false);
+            this.settings.PerformLayout();
             this.ResumeLayout(false);
 
         }
 
+        private void buttonScanCharacters_Click(object sender, RibbonControlEventArgs e)
+        {
+            // throw new NotImplementedException();
+        }
+
+        private void button1_Click(object sender, RibbonControlEventArgs e)
+        {
+            System.Windows.Forms.MessageBox.Show("ProseTools Task Pane opened!", "ProseTools");
+            Globals.ThisAddIn.ShowProseToolsTaskPane();
+        }
+
+
+
         #endregion
 
         internal Microsoft.Office.Tools.Ribbon.RibbonTab tab1;
-        internal Microsoft.Office.Tools.Ribbon.RibbonGroup group1;
+        internal RibbonGroup openProseToolsButton;
+        internal RibbonButton button1;
+        internal RibbonGroup character;
+        internal RibbonButton scanForCharacters;
+        internal RibbonGroup genAI;
+        internal RibbonDropDown genAIDropDown;
+        internal RibbonButton queryGenAIButton;
+        internal RibbonButton characterManagementButton;
+        internal RibbonGroup settings;
+        internal RibbonButton settingsButton;
+        internal RibbonGroup proseGroup;
+        internal RibbonDropDown dropDownProseType;
+        internal RibbonButton startProse;
     }
 
     partial class ThisRibbonCollection
