@@ -102,5 +102,23 @@ namespace ProseTools
             // No Table of Contents found, proceed to open StartBook.cs
             return true;
         }
+
+        private void NewChapter_Click(object sender, RibbonControlEventArgs e)
+        {
+            NewChapterDialog newDlg = new NewChapterDialog();
+            if (newDlg.ShowDialog() == DialogResult.OK)
+            {
+                ;
+            }
+        }
+
+        private void settingsButton_Click(object sender, RibbonControlEventArgs e)
+        {
+            SettingsDlg settingsDlg = new SettingsDlg();
+            if (settingsDlg.ShowDialog() == DialogResult.OK)
+            {
+                ;
+            }
+        }
     }
 }

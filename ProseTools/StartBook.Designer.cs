@@ -42,6 +42,8 @@
             this.proseText = new System.Windows.Forms.Label();
             this.SetProseChapterFontInfoButton = new System.Windows.Forms.Button();
             this.SetProseTextFontInfoButton = new System.Windows.Forms.Button();
+            this.proseSubchapter = new System.Windows.Forms.Label();
+            this.SetProseSubchapterFontInfoButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // label1
@@ -94,7 +96,7 @@
             // 
             // buttonStart
             // 
-            this.buttonStart.Location = new System.Drawing.Point(463, 50);
+            this.buttonStart.Location = new System.Drawing.Point(470, 13);
             this.buttonStart.Name = "buttonStart";
             this.buttonStart.Size = new System.Drawing.Size(75, 23);
             this.buttonStart.TabIndex = 2;
@@ -104,7 +106,7 @@
             // 
             // cancel
             // 
-            this.cancel.Location = new System.Drawing.Point(463, 79);
+            this.cancel.Location = new System.Drawing.Point(470, 42);
             this.cancel.Name = "cancel";
             this.cancel.Size = new System.Drawing.Size(75, 23);
             this.cancel.TabIndex = 2;
@@ -141,7 +143,7 @@
             // proseText
             // 
             this.proseText.AutoSize = true;
-            this.proseText.Location = new System.Drawing.Point(17, 364);
+            this.proseText.Location = new System.Drawing.Point(17, 407);
             this.proseText.Name = "proseText";
             this.proseText.Size = new System.Drawing.Size(84, 20);
             this.proseText.TabIndex = 5;
@@ -159,20 +161,42 @@
             // 
             // SetProseTextFontInfoButton
             // 
-            this.SetProseTextFontInfoButton.Location = new System.Drawing.Point(353, 363);
+            this.SetProseTextFontInfoButton.Location = new System.Drawing.Point(353, 406);
             this.SetProseTextFontInfoButton.Name = "SetProseTextFontInfoButton";
             this.SetProseTextFontInfoButton.Size = new System.Drawing.Size(75, 23);
             this.SetProseTextFontInfoButton.TabIndex = 6;
             this.SetProseTextFontInfoButton.Text = "Set...";
             this.SetProseTextFontInfoButton.UseVisualStyleBackColor = true;
+            this.SetProseTextFontInfoButton.Click += new System.EventHandler(this.SetProseTextFontInfoButton_Click);
+            // 
+            // proseSubchapter
+            // 
+            this.proseSubchapter.AutoSize = true;
+            this.proseSubchapter.Location = new System.Drawing.Point(17, 364);
+            this.proseSubchapter.Name = "proseSubchapter";
+            this.proseSubchapter.Size = new System.Drawing.Size(137, 20);
+            this.proseSubchapter.TabIndex = 5;
+            this.proseSubchapter.Text = "Prose Subchapter";
+            // 
+            // SetProseSubchapterFontInfoButton
+            // 
+            this.SetProseSubchapterFontInfoButton.Location = new System.Drawing.Point(353, 363);
+            this.SetProseSubchapterFontInfoButton.Name = "SetProseSubchapterFontInfoButton";
+            this.SetProseSubchapterFontInfoButton.Size = new System.Drawing.Size(75, 23);
+            this.SetProseSubchapterFontInfoButton.TabIndex = 6;
+            this.SetProseSubchapterFontInfoButton.Text = "Set...";
+            this.SetProseSubchapterFontInfoButton.UseVisualStyleBackColor = true;
+            this.SetProseSubchapterFontInfoButton.Click += new System.EventHandler(this.SetProseTextFontInfoButton_Click);
             // 
             // StartBook
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(572, 450);
+            this.ClientSize = new System.Drawing.Size(572, 474);
+            this.Controls.Add(this.SetProseSubchapterFontInfoButton);
             this.Controls.Add(this.SetProseTextFontInfoButton);
             this.Controls.Add(this.SetProseChapterFontInfoButton);
+            this.Controls.Add(this.proseSubchapter);
             this.Controls.Add(this.proseText);
             this.Controls.Add(this.proseChapter);
             this.Controls.Add(this.label4);
@@ -185,7 +209,12 @@
             this.Controls.Add(this.label2);
             this.Controls.Add(this.title);
             this.Controls.Add(this.label1);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "StartBook";
+            this.ShowIcon = false;
+            this.ShowInTaskbar = false;
             this.Text = "Start Book";
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -208,5 +237,7 @@
         private System.Windows.Forms.Label proseText;
         private System.Windows.Forms.Button SetProseChapterFontInfoButton;
         private System.Windows.Forms.Button SetProseTextFontInfoButton;
+        private System.Windows.Forms.Label proseSubchapter;
+        private System.Windows.Forms.Button SetProseSubchapterFontInfoButton;
     }
 }

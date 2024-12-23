@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using Microsoft.Office.Interop.Word;
 
@@ -40,13 +36,6 @@ namespace ProseTools
             dropDownFontList.Items.AddRange(GetWordFonts().OrderBy(f => f).ToArray());
             dropDownFontList.SelectedIndex = 0;
 
-            // Populate the color combo box with color names and swatches
-            comboBoxColor.DrawMode = DrawMode.OwnerDrawFixed;
-            comboBoxColor.DropDownStyle = ComboBoxStyle.DropDownList;
-            comboBoxColor.DrawItem += ComboBoxColor_DrawItem;
-            comboBoxColor.Items.AddRange(GetColorList().Cast<object>().ToArray());
-            comboBoxColor.SelectedIndex = 0;
-
             // Set default values for controls
             pointSizeUpDown.Value = 12;
             chkBoxBold.Checked = false;
@@ -55,7 +44,37 @@ namespace ProseTools
             chkBoxStrike.Checked = false;
             chkBoxLeft.Checked = true;
             SelectedAlignment = WdParagraphAlignment.wdAlignParagraphLeft;
+
+            // Populate the color combo box with color names and swatches
+            comboBoxColor.DrawMode = DrawMode.OwnerDrawFixed;
+            comboBoxColor.DropDownStyle = ComboBoxStyle.DropDownList;
+            comboBoxColor.DrawItem += ComboBoxColor_DrawItem;
+            comboBoxColor.Items.AddRange(GetColorList().Cast<object>().ToArray());
+            comboBoxColor.SelectedIndex = 0;
+
+            // Set fonts for all controls
+            var defaultFont = new System.Drawing.Font("Segoe UI", 9, FontStyle.Regular); // Default font for controls
+            var defaultColor = Color.Black; // Default color for controls
+            SetControlFontAndColor(this, defaultFont, defaultColor);
+
+            // Update the sample text label
             UpdateSampleLabel();
+        }
+
+        private void SetControlFontAndColor(Control control, System.Drawing.Font font, Color color)
+        {
+            control.Font = font;
+            control.ForeColor = color;
+
+            foreach (Control childControl in control.Controls)
+            {
+                SetControlFontAndColor(childControl, font, color);
+            }
+
+            chkBoxBold.Font = new System.Drawing.Font(font, FontStyle.Bold);
+            chkBoxItalic.Font = new System.Drawing.Font(font, FontStyle.Italic);
+            chkBoxUnderline.Font = new System.Drawing.Font(font, FontStyle.Underline);
+            chkBoxStrike.Font = new System.Drawing.Font(font, FontStyle.Strikeout);
         }
 
         private void UpdateSampleLabel()
@@ -65,10 +84,19 @@ namespace ProseTools
             if (chkBoxBold.Checked) fontStyle |= FontStyle.Bold;
             if (chkBoxItalic.Checked) fontStyle |= FontStyle.Italic;
             if (chkBoxUnderline.Checked) fontStyle |= FontStyle.Underline;
+            if (chkBoxStrike.Checked) fontStyle |= FontStyle.Strikeout;
 
-            labelSample.Font = new System.Drawing.Font(dropDownFontList.SelectedItem.ToString(), (float)pointSizeUpDown.Value, fontStyle);
-            labelSample.ForeColor = (Color)comboBoxColor.SelectedItem;
+            labelSample.Font = new System.Drawing.Font(dropDownFontList.SelectedItem.ToString(), 
+                (pointSizeUpDown.Value > 0 ? (float)pointSizeUpDown.Value : 12.0f),
+                fontStyle);
+            labelSample.ForeColor = comboBoxColor.SelectedItem != null
+                ? (Color)comboBoxColor.SelectedItem
+                : Color.Black;
             labelSample.Text = "Sample Text";
+            labelSample.TextAlign = chkBoxLeft.Checked ? ContentAlignment.MiddleLeft :
+                chkBoxCenter.Checked ? ContentAlignment.MiddleCenter :
+                chkBoxRight.Checked ? ContentAlignment.MiddleRight :
+                ContentAlignment.MiddleLeft;
         }
 
         private List<string> GetWordFonts()
@@ -97,7 +125,14 @@ namespace ProseTools
                 e.Graphics.FillRectangle(brush, e.Bounds);
             }
 
-            e.Graphics.DrawString(color.Name, e.Font, Brushes.Black, new PointF(e.Bounds.X + 40, e.Bounds.Y));
+            if (Color.FromArgb(255, color.R, color.G, color.B).GetBrightness() < 0.4)
+            {
+                e.Graphics.DrawString(color.Name, e.Font, Brushes.White, new PointF(e.Bounds.X + 40, e.Bounds.Y));
+            }
+            else
+            {
+                e.Graphics.DrawString(color.Name, e.Font, Brushes.Black, new PointF(e.Bounds.X + 40, e.Bounds.Y));
+            }
         }
 
         private void Ok_Click(object sender, EventArgs e)
@@ -129,13 +164,30 @@ namespace ProseTools
 
         private void PTFontDialog_Load(object sender, EventArgs e)
         {
-            dropDownFontList.SelectedIndex = SelectedFontName != null ? dropDownFontList.Items.IndexOf(SelectedFontName) : 0;
+
+        }
+
+        public new DialogResult ShowDialog()
+        {
+            dropDownFontList.SelectedIndex = SelectedFontName != null
+                ? dropDownFontList.Items.IndexOf(SelectedFontName)
+                : dropDownFontList.Items.IndexOf("Times New Roman") != -1
+                    ? dropDownFontList.Items.IndexOf("Times New Roman")
+                    : 0;
+
             pointSizeUpDown.Value = (decimal)SelectedFontSize;
             chkBoxBold.Checked = SelectedBold;
             chkBoxItalic.Checked = SelectedItalic;
             chkBoxUnderline.Checked = SelectedUnderline;
             chkBoxStrike.Checked = SelectedStrike;
             comboBoxColor.SelectedIndex = comboBoxColor.Items.IndexOf(SelectedFontColor);
+
+            // Temporarily unsubscribe from CheckedChanged events
+            chkBoxLeft.CheckedChanged -= chkBoxLeft_CheckedChanged;
+            chkBoxCenter.CheckedChanged -= chkBoxCenter_CheckedChanged;
+            chkBoxRight.CheckedChanged -= chkBoxRight_CheckedChanged;
+            chkBoxJustify.CheckedChanged -= chkBoxJustify_CheckedChanged;
+
             switch (SelectedAlignment)
             {
                 case WdParagraphAlignment.wdAlignParagraphLeft:
@@ -151,6 +203,94 @@ namespace ProseTools
                     chkBoxJustify.Checked = true;
                     break;
             }
+
+            // Re-subscribe to CheckedChanged events
+            chkBoxLeft.CheckedChanged += chkBoxLeft_CheckedChanged;
+            chkBoxCenter.CheckedChanged += chkBoxCenter_CheckedChanged;
+            chkBoxRight.CheckedChanged += chkBoxRight_CheckedChanged;
+            chkBoxJustify.CheckedChanged += chkBoxJustify_CheckedChanged;
+
+            UpdateSampleLabel();
+            return base.ShowDialog();
+        }
+
+        private void chkBoxLeft_CheckedChanged(object sender, EventArgs e)
+        {
+            if (chkBoxLeft.Checked)
+            {
+                chkBoxCenter.Checked = false;
+                chkBoxRight.Checked = false;
+                chkBoxJustify.Checked = false;
+                UpdateSampleLabel();
+            }
+        }
+
+        private void chkBoxCenter_CheckedChanged(object sender, EventArgs e)
+        {
+            if (chkBoxCenter.Checked)
+            {
+                chkBoxLeft.Checked = false;
+                chkBoxRight.Checked = false;
+                chkBoxJustify.Checked = false;
+                UpdateSampleLabel();
+            }
+        }
+
+        private void chkBoxRight_CheckedChanged(object sender, EventArgs e)
+        {
+            if (chkBoxRight.Checked)
+            {
+                chkBoxLeft.Checked = false;
+                chkBoxCenter.Checked = false;
+                chkBoxJustify.Checked = false;
+                UpdateSampleLabel();
+            }
+        }
+
+        private void chkBoxJustify_CheckedChanged(object sender, EventArgs e)
+        {
+            if (chkBoxJustify.Checked)
+            {
+                chkBoxLeft.Checked = false;
+                chkBoxCenter.Checked = false;
+                chkBoxRight.Checked = false;
+                UpdateSampleLabel();
+            }
+        }
+
+        private void chkBoxBold_CheckedChanged(object sender, EventArgs e)
+        {
+            UpdateSampleLabel();
+        }
+
+        private void chkBoxItalic_CheckedChanged(object sender, EventArgs e)
+        {
+            UpdateSampleLabel();
+        }
+
+        private void chkBoxUnderline_CheckedChanged(object sender, EventArgs e)
+        {
+            UpdateSampleLabel();
+        }
+
+        private void chkBoxStrike_CheckedChanged(object sender, EventArgs e)
+        {
+            UpdateSampleLabel();
+        }
+
+        private void comboBoxColor_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            UpdateSampleLabel();
+        }
+
+        private void pointSizeUpDown_ValueChanged(object sender, EventArgs e)
+        {
+            UpdateSampleLabel();
+        }
+
+        private void dropDownFontList_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            UpdateSampleLabel();
         }
     }
 }

@@ -39,7 +39,6 @@ namespace ProseTools
         {
             this.tab1 = this.Factory.CreateRibbonTab();
             this.openProseToolsButton = this.Factory.CreateRibbonGroup();
-            this.button1 = this.Factory.CreateRibbonButton();
             this.character = this.Factory.CreateRibbonGroup();
             this.characterManagementButton = this.Factory.CreateRibbonButton();
             this.scanForCharacters = this.Factory.CreateRibbonButton();
@@ -49,7 +48,9 @@ namespace ProseTools
             this.proseGroup = this.Factory.CreateRibbonGroup();
             this.dropDownProseType = this.Factory.CreateRibbonDropDown();
             this.startProse = this.Factory.CreateRibbonButton();
+            this.NewChapter = this.Factory.CreateRibbonButton();
             this.settings = this.Factory.CreateRibbonGroup();
+            this.button1 = this.Factory.CreateRibbonButton();
             this.settingsButton = this.Factory.CreateRibbonButton();
             this.tab1.SuspendLayout();
             this.openProseToolsButton.SuspendLayout();
@@ -75,15 +76,6 @@ namespace ProseTools
             this.openProseToolsButton.Items.Add(this.button1);
             this.openProseToolsButton.Label = "ProseTools";
             this.openProseToolsButton.Name = "openProseToolsButton";
-            // 
-            // button1
-            // 
-            this.button1.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
-            this.button1.Image = global::ProseTools.Properties.Resources.green_icon_512x512;
-            this.button1.Label = "Open ProseTools";
-            this.button1.Name = "button1";
-            this.button1.ShowImage = true;
-            this.button1.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.button1_Click);
             // 
             // character
             // 
@@ -125,6 +117,7 @@ namespace ProseTools
             // 
             this.proseGroup.Items.Add(this.dropDownProseType);
             this.proseGroup.Items.Add(this.startProse);
+            this.proseGroup.Items.Add(this.NewChapter);
             this.proseGroup.Label = "Prose";
             this.proseGroup.Name = "proseGroup";
             // 
@@ -139,11 +132,26 @@ namespace ProseTools
             this.startProse.Name = "startProse";
             this.startProse.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.startProse_Click);
             // 
+            // NewChapter
+            // 
+            this.NewChapter.Label = "New Chapter";
+            this.NewChapter.Name = "NewChapter";
+            this.NewChapter.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.NewChapter_Click);
+            // 
             // settings
             // 
             this.settings.Items.Add(this.settingsButton);
             this.settings.Label = "Settings";
             this.settings.Name = "settings";
+            // 
+            // button1
+            // 
+            this.button1.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
+            this.button1.Image = global::ProseTools.Properties.Resources.green_icon_512x512;
+            this.button1.Label = "Open ProseTools";
+            this.button1.Name = "button1";
+            this.button1.ShowImage = true;
+            this.button1.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.button1_Click);
             // 
             // settingsButton
             // 
@@ -151,6 +159,7 @@ namespace ProseTools
             this.settingsButton.Label = "Settings...";
             this.settingsButton.Name = "settingsButton";
             this.settingsButton.ShowImage = true;
+            this.settingsButton.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.settingsButton_Click);
             // 
             // ProseToolsRibbon
             // 
@@ -203,6 +212,7 @@ namespace ProseTools
         internal RibbonGroup proseGroup;
         internal RibbonDropDown dropDownProseType;
         internal RibbonButton startProse;
+        internal RibbonButton NewChapter;
     }
 
     partial class ThisRibbonCollection

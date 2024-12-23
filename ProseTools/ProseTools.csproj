@@ -222,6 +222,18 @@
       <DependentUpon>CharacterManagement.cs</DependentUpon>
     </Compile>
     <Compile Include="CharacterScanner.cs" />
+    <Compile Include="NewChapterDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="NewChapterDialog.Designer.cs">
+      <DependentUpon>NewChapterDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="OutlineForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="OutlineForm.Designer.cs">
+      <DependentUpon>OutlineForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="OutlineTaskPaneControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -236,6 +248,12 @@
     </Compile>
     <Compile Include="PTFontDialog.Designer.cs">
       <DependentUpon>PTFontDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SettingsDlg.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SettingsDlg.Designer.cs">
+      <DependentUpon>SettingsDlg.cs</DependentUpon>
     </Compile>
     <Compile Include="StartBook.cs">
       <SubType>Form</SubType>
@@ -255,6 +273,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="CharacterManagement.resx">
       <DependentUpon>CharacterManagement.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NewChapterDialog.resx">
+      <DependentUpon>NewChapterDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="OutlineForm.resx">
+      <DependentUpon>OutlineForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="OutlineTaskPaneControl.resx">
       <DependentUpon>OutlineTaskPaneControl.cs</DependentUpon>
@@ -277,6 +301,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="scanForCharacters.resx">
       <DependentUpon>scanForCharacters.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SettingsDlg.resx">
+      <DependentUpon>SettingsDlg.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="StartBook.resx">
       <DependentUpon>StartBook.cs</DependentUpon>

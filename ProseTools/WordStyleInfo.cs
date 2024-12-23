@@ -10,6 +10,8 @@ namespace ProseTools
         public float FontSize { get; set; }
         public bool Bold { get; set; }
         public bool Italic { get; set; }
+        public bool Underline { get; set; }
+        public bool Strikethrough { get; set; }
         public Color FontColor { get; set; }
         public WdParagraphAlignment Alignment { get; set; }
 
