@@ -120,5 +120,11 @@ namespace ProseTools
                 ;
             }
         }
+
+        private void Outline_Click(object sender, RibbonControlEventArgs e)
+        {
+            OutlineForm outlineForm = new OutlineForm();
+            outlineForm.ShowDialog();
+        }
     }
 }

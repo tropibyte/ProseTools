@@ -12,9 +12,11 @@ namespace ProseTools
     public partial class ThisAddIn
     {
         private Microsoft.Office.Tools.CustomTaskPane MyProseToolsTaskPane;
+        internal ProseMetaData _ProseMetaData { get; private set; }
 
         private void ThisAddIn_Startup(object sender, System.EventArgs e)
         {
+            _ProseMetaData = new ProseMetaData();
         }
 
         private void ThisAddIn_Shutdown(object sender, System.EventArgs e)
@@ -57,7 +59,7 @@ namespace ProseTools
             this.Startup += new System.EventHandler(ThisAddIn_Startup);
             this.Shutdown += new System.EventHandler(ThisAddIn_Shutdown);
         }
-        
+
         #endregion
     }
 }

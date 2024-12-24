@@ -40,17 +40,18 @@ namespace ProseTools
             this.tab1 = this.Factory.CreateRibbonTab();
             this.openProseToolsButton = this.Factory.CreateRibbonGroup();
             this.character = this.Factory.CreateRibbonGroup();
-            this.characterManagementButton = this.Factory.CreateRibbonButton();
-            this.scanForCharacters = this.Factory.CreateRibbonButton();
             this.genAI = this.Factory.CreateRibbonGroup();
             this.genAIDropDown = this.Factory.CreateRibbonDropDown();
-            this.queryGenAIButton = this.Factory.CreateRibbonButton();
             this.proseGroup = this.Factory.CreateRibbonGroup();
             this.dropDownProseType = this.Factory.CreateRibbonDropDown();
-            this.startProse = this.Factory.CreateRibbonButton();
-            this.NewChapter = this.Factory.CreateRibbonButton();
             this.settings = this.Factory.CreateRibbonGroup();
             this.button1 = this.Factory.CreateRibbonButton();
+            this.characterManagementButton = this.Factory.CreateRibbonButton();
+            this.scanForCharacters = this.Factory.CreateRibbonButton();
+            this.queryGenAIButton = this.Factory.CreateRibbonButton();
+            this.startProse = this.Factory.CreateRibbonButton();
+            this.NewChapter = this.Factory.CreateRibbonButton();
+            this.Outline = this.Factory.CreateRibbonButton();
             this.settingsButton = this.Factory.CreateRibbonButton();
             this.tab1.SuspendLayout();
             this.openProseToolsButton.SuspendLayout();
@@ -84,18 +85,6 @@ namespace ProseTools
             this.character.Label = "Character";
             this.character.Name = "character";
             // 
-            // characterManagementButton
-            // 
-            this.characterManagementButton.Label = "Character Management...";
-            this.characterManagementButton.Name = "characterManagementButton";
-            this.characterManagementButton.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.characterManagementButton_Click);
-            // 
-            // scanForCharacters
-            // 
-            this.scanForCharacters.Label = "Scan For Characters...";
-            this.scanForCharacters.Name = "scanForCharacters";
-            this.scanForCharacters.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.scanForCharactersButton_Click);
-            // 
             // genAI
             // 
             this.genAI.Items.Add(this.genAIDropDown);
@@ -108,16 +97,12 @@ namespace ProseTools
             this.genAIDropDown.Label = "AI";
             this.genAIDropDown.Name = "genAIDropDown";
             // 
-            // queryGenAIButton
-            // 
-            this.queryGenAIButton.Label = "Query...";
-            this.queryGenAIButton.Name = "queryGenAIButton";
-            // 
             // proseGroup
             // 
             this.proseGroup.Items.Add(this.dropDownProseType);
             this.proseGroup.Items.Add(this.startProse);
             this.proseGroup.Items.Add(this.NewChapter);
+            this.proseGroup.Items.Add(this.Outline);
             this.proseGroup.Label = "Prose";
             this.proseGroup.Name = "proseGroup";
             // 
@@ -125,18 +110,6 @@ namespace ProseTools
             // 
             this.dropDownProseType.Label = "Type";
             this.dropDownProseType.Name = "dropDownProseType";
-            // 
-            // startProse
-            // 
-            this.startProse.Label = "Start Prose";
-            this.startProse.Name = "startProse";
-            this.startProse.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.startProse_Click);
-            // 
-            // NewChapter
-            // 
-            this.NewChapter.Label = "New Chapter";
-            this.NewChapter.Name = "NewChapter";
-            this.NewChapter.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.NewChapter_Click);
             // 
             // settings
             // 
@@ -152,6 +125,44 @@ namespace ProseTools
             this.button1.Name = "button1";
             this.button1.ShowImage = true;
             this.button1.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.button1_Click);
+            // 
+            // characterManagementButton
+            // 
+            this.characterManagementButton.Label = "Character Management...";
+            this.characterManagementButton.Name = "characterManagementButton";
+            this.characterManagementButton.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.characterManagementButton_Click);
+            // 
+            // scanForCharacters
+            // 
+            this.scanForCharacters.Label = "Scan For Characters...";
+            this.scanForCharacters.Name = "scanForCharacters";
+            this.scanForCharacters.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.scanForCharactersButton_Click);
+            // 
+            // queryGenAIButton
+            // 
+            this.queryGenAIButton.Label = "Query...";
+            this.queryGenAIButton.Name = "queryGenAIButton";
+            // 
+            // startProse
+            // 
+            this.startProse.Label = "Start Prose";
+            this.startProse.Name = "startProse";
+            this.startProse.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.startProse_Click);
+            // 
+            // NewChapter
+            // 
+            this.NewChapter.Label = "New Chapter";
+            this.NewChapter.Name = "NewChapter";
+            this.NewChapter.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.NewChapter_Click);
+            // 
+            // Outline
+            // 
+            this.Outline.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
+            this.Outline.Image = global::ProseTools.Properties.Resources.outline_icon;
+            this.Outline.Label = "Outline";
+            this.Outline.Name = "Outline";
+            this.Outline.ShowImage = true;
+            this.Outline.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.Outline_Click);
             // 
             // settingsButton
             // 
@@ -213,6 +224,7 @@ namespace ProseTools
         internal RibbonDropDown dropDownProseType;
         internal RibbonButton startProse;
         internal RibbonButton NewChapter;
+        internal RibbonButton Outline;
     }
 
     partial class ThisRibbonCollection
