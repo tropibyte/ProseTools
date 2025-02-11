@@ -43,6 +43,10 @@ namespace ProseTools
             dropDownProseType.Items.Clear();
 
             dropDownProseType.Items.Add(CreateDropDownItem("Novel"));
+            dropDownProseType.Items.Add(CreateDropDownItem("Research Paper")); 
+            dropDownProseType.Items.Add(CreateDropDownItem("Technical Paper")); 
+            dropDownProseType.Items.Add(CreateDropDownItem("Screenplay")); 
+
             // Optionally set a default selection
             dropDownProseType.SelectedItemIndex = 0; // Default to Narrative
         }
@@ -81,16 +85,56 @@ namespace ProseTools
                     startBook.ShowDialog();
                 }
             }
+            else if(proseType == "Research Paper")
+            {
+                if (ShouldOpenStartResearchPaper())
+                {
+                    // Open StartResearchPaper.cs
+                    StartResearchPaper startResearchPaper = new StartResearchPaper();
+                    startResearchPaper.ShowDialog();
+                }
+            }
+            else if(proseType == "Technical Paper")
+            {
+                if (ShouldOpenStartTechnicalPaper())
+                {
+                    // Open StartTechnicalPaper.cs
+                    StartTechnicalPaper startTechnicalPaper = new StartTechnicalPaper();
+                    startTechnicalPaper.ShowDialog();
+                }
+            }
         }
 
-        private bool ShouldOpenStartBook()
+        private bool ShouldOpenStartResearchPaper()
         {
+            return IsActiveDocumentOpen();
+        }
+
+        private bool ShouldOpenStartTechnicalPaper()
+        {
+            return IsActiveDocumentOpen();
+        }
+
+        private bool IsActiveDocumentOpen()
+        { 
             var wordDoc = Globals.ThisAddIn.Application.ActiveDocument;
             if (wordDoc == null)
             {
                 MessageBox.Show("No active Word document found. Please open a document and try again.", "Error");
                 return false;
             }
+
+            return true;
+        }
+
+        private bool ShouldOpenStartBook()
+        {
+            if(!IsActiveDocumentOpen())
+            {
+                return false;
+            }
+
+            var wordDoc = Globals.ThisAddIn.Application.ActiveDocument;
 
             // Check if the document contains a Table of Contents
             if (wordDoc.TablesOfContents.Count > 0)
@@ -123,8 +167,35 @@ namespace ProseTools
 
         private void Outline_Click(object sender, RibbonControlEventArgs e)
         {
+            if (Globals.ThisAddIn.Application.ActiveDocument == null)
+            {
+                MessageBox.Show("No active Word document found. Please open a document and try again.", "Error");
+                return;
+            }
+
+            if (Globals.ThisAddIn._ProseMetaData == null)
+            {
+                MessageBox.Show("ProseMetaData not found. Please open a document with ProseMetaData and try again.", "Error");
+                return;
+            }
+
+            // Check if the metadata is specifically for a Novel
+            if (!(Globals.ThisAddIn._ProseMetaData is NovelMetaData novelMetaData))
+            {
+                MessageBox.Show("This document does not contain novel metadata. The Outline feature is only available for novels.", "Error");
+                return;
+            }
+
+            // Proceed with the Outline
             OutlineForm outlineForm = new OutlineForm();
+            outlineForm.InitializeOutline(novelMetaData.TheOutline);  // Now safe to access TheOutline
             outlineForm.ShowDialog();
+        }
+
+        private void GenAI_login_Click(object sender, RibbonControlEventArgs e)
+        {
+            GenAI_Login genAI_Login = new GenAI_Login();
+            genAI_Login.ShowDialog();
         }
     }
 }

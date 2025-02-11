@@ -1,11 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ProseTools
@@ -22,30 +17,25 @@ namespace ProseTools
         private int treeViewInitialHeight;
         private int richTextBoxInitialHeight;
 
-        // Ratio used so TreeView and RichTextBox expand proportionally
         private float treeToRichWidthRatio;
 
-        // Horizontal gap between TreeView and RichTextBox
         private int gapTreeViewToRichTextBox;
-
-        // Distance from bottom edge to bottom-row buttons
         private int buttonBottomMargin;
 
-        // Distances from left edge of the RichTextBox to each button
         private int addButtonLeftOffset;
         private int editButtonLeftOffset;
         private int deleteButtonLeftOffset;
         private int scanButtonLeftOffset;
 
-        // Distances from bottom edge for TreeView and RichTextBox
         private int treeViewBottomMargin;
         private int richTextBoxBottomMargin;
 
-        // Distances from the right edge for Ok/Cancel
         private int okButtonRightMargin;
         private int cancelButtonRightMargin;
 
         private int addButtonWidth;
+
+        private Outline _outline;
 
         public OutlineForm()
         {
@@ -54,69 +44,86 @@ namespace ProseTools
 
         private void OutlineForm_Load(object sender, EventArgs e)
         {
-            // 1) Capture the initial form dimensions
+            CaptureInitialSizes();
+            if (_outline != null)
+                PopulateTreeView();
+
+            // Subscribe to the AfterSelect event
+            treeView1.AfterSelect += TreeView1_AfterSelect;
+        }
+
+        private void CaptureInitialSizes()
+        {
             initialFormWidth = this.Width;
             initialFormHeight = this.Height;
 
-            // 2) Capture the initial widths and heights of TreeView and RichTextBox
             treeViewInitialWidth = treeView1.Width;
             richTextBoxInitialWidth = richTextBoxDetails.Width;
-
             treeViewInitialHeight = treeView1.Height;
             richTextBoxInitialHeight = richTextBoxDetails.Height;
 
-            // 3) Calculate the ratio so TreeView & RichTextBox expand proportionally in the horizontal dimension
             float combinedWidth = treeView1.Width + (float)richTextBoxDetails.Width;
             treeToRichWidthRatio = treeView1.Width / combinedWidth;
 
-            // 4) Capture the gap between TreeView and RichTextBox
             gapTreeViewToRichTextBox = richTextBoxDetails.Left - (treeView1.Left + treeView1.Width);
 
-            // 5) Capture the distance from the bottom edge to the bottom row of buttons
             buttonBottomMargin = this.ClientSize.Height - buttonAdd.Bottom;
 
-            // 6) Capture each button’s horizontal offset from the RichTextBox’s left edge
             addButtonLeftOffset = buttonAdd.Left - richTextBoxDetails.Left;
             editButtonLeftOffset = buttonEdit.Left - richTextBoxDetails.Left;
             deleteButtonLeftOffset = buttonDelete.Left - richTextBoxDetails.Left;
             scanButtonLeftOffset = buttonScan.Left - richTextBoxDetails.Left;
 
-            // 7) Capture bottom margins for TreeView and RichTextBox
             treeViewBottomMargin = this.ClientSize.Height - (treeView1.Top + treeView1.Height);
             richTextBoxBottomMargin = this.ClientSize.Height - (richTextBoxDetails.Top + richTextBoxDetails.Height);
 
-            // 8) Capture distances from the right edge for Ok and Cancel
             okButtonRightMargin = this.ClientSize.Width - Ok.Right;
             cancelButtonRightMargin = this.ClientSize.Width - Cancel.Right;
 
-            // 9) Capture the initial width of the Add button
             addButtonWidth = buttonAdd.Width;
         }
 
+        private void TreeView1_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+            // Ensure a node is selected
+            if (e.Node?.Tag is OutlineNode selectedNode)
+            {
+                // Populate the richTextBoxDetails with the node's details
+                StringBuilder details = new StringBuilder();
+                details.AppendLine($"Title: {selectedNode.Title}");
+                details.AppendLine($"Details: {selectedNode.Details}");
+
+                if (selectedNode.Attributes != null && selectedNode.Attributes.Count > 0)
+                {
+                    details.AppendLine("\nAttributes:");
+                    foreach (var attribute in selectedNode.Attributes)
+                    {
+                        details.AppendLine($"{attribute.Key}: {attribute.Value}");
+                    }
+                }
+
+                richTextBoxDetails.Text = details.ToString();
+            }
+            else
+            {
+                // Clear the richTextBoxDetails if no valid node is selected
+                richTextBoxDetails.Clear();
+            }
+        }
+
+
         private void OutlineForm_Resize(object sender, EventArgs e)
         {
-            // Suspend layout logic for the form and its controls
-            this.SuspendLayout();
-            // Enforce minimum size
-            if (this.Width < initialFormWidth)
-            {
-                this.Width = initialFormWidth;
-                treeView1.Width = treeViewInitialWidth + 4;
-                richTextBoxDetails.Width = richTextBoxInitialWidth + 4;
-            }
+            AdjustLayout();
+        }
 
-            if (this.Height < initialFormHeight)
-            {
-                this.Height = initialFormHeight;
-                treeView1.Height = treeViewInitialHeight;
-                richTextBoxDetails.Height = richTextBoxInitialHeight;
-            }
+        private void AdjustLayout()
+        {
+            SuspendLayout();
 
-            // Current client dimensions
             int clientW = this.ClientSize.Width;
             int clientH = this.ClientSize.Height;
 
-            // Proportionally size the TreeView and RichTextBox (horizontally)
             int richTextboxRightMargin = clientW - (richTextBoxDetails.Left + richTextBoxDetails.Width);
             int totalHorizontalSpace = clientW
                                        - treeView1.Left
@@ -130,47 +137,157 @@ namespace ProseTools
             richTextBoxDetails.Left = treeView1.Right + gapTreeViewToRichTextBox;
             richTextBoxDetails.Width = newRichWidth;
 
-            // Resize TreeView & RichTextBox vertically to maintain bottom margin
             treeView1.Height = clientH - treeView1.Top - treeViewBottomMargin;
             richTextBoxDetails.Height = clientH - richTextBoxDetails.Top - richTextBoxBottomMargin;
 
-            // Position bottom buttons so they keep the same distance from bottom
-            // and maintain the same horizontal offset from the RichTextBox’s left edge.
             int newButtonTop = clientH - buttonBottomMargin - buttonAdd.Height;
-
             buttonAdd.Top = newButtonTop;
             buttonEdit.Top = newButtonTop;
             buttonDelete.Top = newButtonTop;
             buttonScan.Top = newButtonTop;
 
-            // Keep their widths the same (no code changing Width),
-            // only reposition horizontally based on the new RichTextBox left.
             buttonAdd.Left = richTextBoxDetails.Left + addButtonLeftOffset;
             buttonEdit.Left = richTextBoxDetails.Left + editButtonLeftOffset;
             buttonDelete.Left = richTextBoxDetails.Left + deleteButtonLeftOffset;
             buttonScan.Left = richTextBoxDetails.Left + scanButtonLeftOffset;
 
-            // Keep OK and Cancel the same distance from the right edge
             Ok.Left = clientW - okButtonRightMargin - Ok.Width;
             Cancel.Left = clientW - cancelButtonRightMargin - Cancel.Width;
 
-            // Keep the Add button the same width
             buttonAdd.Width = addButtonWidth;
             buttonEdit.Width = addButtonWidth;
             buttonDelete.Width = addButtonWidth;
             buttonScan.Width = addButtonWidth;
 
-            // Reposition label2 to have the same left edge as richTextBoxDetails
             label2.Left = richTextBoxDetails.Left;
 
-            // Resume layout logic for the form and its controls
-            this.ResumeLayout();
+            ResumeLayout();
         }
 
-        private void Cancel_Click(object sender, EventArgs e)
+        private void PopulateTreeView()
         {
-            this.DialogResult = DialogResult.Cancel;
-            Close();
+            treeView1.Nodes.Clear();
+
+            if (_outline == null || _outline.Nodes.Count == 0)
+                return;
+
+            foreach (var node in _outline.Nodes)
+            {
+                var treeNode = CreateTreeNode(node);
+                treeView1.Nodes.Add(treeNode);
+            }
+
+            treeView1.ExpandAll();
+        }
+
+        private TreeNode CreateTreeNode(OutlineNode outlineNode)
+        {
+            var treeNode = new TreeNode(outlineNode.Title)
+            {
+                Tag = outlineNode
+            };
+
+            foreach (var child in outlineNode.Children)
+            {
+                treeNode.Nodes.Add(CreateTreeNode(child));
+            }
+
+            return treeNode;
+        }
+
+        internal void InitializeOutline(Outline theOutline)
+        {
+            _outline = theOutline;
+            PopulateTreeView();
+        }
+
+        private void buttonAdd_Click(object sender, EventArgs e)
+        {
+            var newNodeTitle = PromptForInput("Enter node title:", "Add Node");
+            if (string.IsNullOrWhiteSpace(newNodeTitle))
+                return;
+
+            var selectedNode = treeView1.SelectedNode?.Tag as OutlineNode;
+            var newNode = new OutlineNode { Title = newNodeTitle };
+
+            if (selectedNode != null)
+            {
+                selectedNode.AddChild(newNode);
+            }
+            else
+            {
+                _outline.AddNode(newNode);
+            }
+
+            PopulateTreeView();
+        }
+
+        private void buttonEdit_Click(object sender, EventArgs e)
+        {
+            if (!(treeView1.SelectedNode?.Tag is OutlineNode selectedNode))
+                return;
+
+            var updatedTitle = PromptForInput("Edit node title:", "Edit Node", selectedNode.Title);
+            if (string.IsNullOrWhiteSpace(updatedTitle))
+                return;
+
+            selectedNode.Title = updatedTitle;
+            PopulateTreeView();
+        }
+
+        private void buttonDelete_Click(object sender, EventArgs e)
+        {
+            if (!(treeView1.SelectedNode?.Tag is OutlineNode selectedNode))
+                return;
+
+            var parentNode = FindParentNode(treeView1.SelectedNode);
+
+            if (parentNode?.Tag is OutlineNode parentOutlineNode)
+            {
+                parentOutlineNode.DeleteChild(selectedNode.Title);
+            }
+            else
+            {
+                _outline.DeleteNode(selectedNode.Title);
+            }
+
+            PopulateTreeView();
+        }
+
+        private void buttonScan_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("Scanning functionality not yet implemented.");
+        }
+
+        private TreeNode FindParentNode(TreeNode childNode)
+        {
+            foreach (TreeNode node in treeView1.Nodes)
+            {
+                if (node.Nodes.Contains(childNode))
+                    return node;
+                var parent = FindParentNodeRecursive(node, childNode);
+                if (parent != null)
+                    return parent;
+            }
+            return null;
+        }
+
+        private TreeNode FindParentNodeRecursive(TreeNode currentNode, TreeNode childNode)
+        {
+            foreach (TreeNode node in currentNode.Nodes)
+            {
+                if (node == childNode)
+                    return currentNode;
+                var parent = FindParentNodeRecursive(node, childNode);
+                if (parent != null)
+                    return parent;
+            }
+            return null;
+        }
+
+        private string PromptForInput(string prompt, string title, string defaultValue = "")
+        {
+            return string.Empty;
         }
     }
 }

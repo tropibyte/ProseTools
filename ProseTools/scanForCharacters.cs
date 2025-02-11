@@ -16,6 +16,7 @@ namespace ProseTools
         {
             InitializeComponent();
             InitializeListView();
+            InitializeScanOptions();
             var wordDoc = Globals.ThisAddIn.Application.ActiveDocument;
             if (wordDoc != null)
             {
@@ -42,16 +43,29 @@ namespace ProseTools
 
         }
 
+        private void InitializeScanOptions()
+        {
+            cbWhichScan.DropDownStyle = ComboBoxStyle.DropDownList;
+            cbWhichScan.Items.Clear();
+
+            // Add scan options. You can change the names as appropriate.
+            cbWhichScan.Items.Add("Heuristic");
+            cbWhichScan.Items.Add("spaCy Scan");
+
+            // Set the default selection (for example, Heuristic)
+            cbWhichScan.SelectedIndex = 0;
+        }
+
         private void close_Click(object sender, EventArgs e)
         {
             Close();
         }
 
-        private void doScanButton_Click(object sender, EventArgs e)
+        private async void doScanButton_Click(object sender, EventArgs e)
         {
             try
             {
-                // Ensure there's an active Word document
+                // Ensure there's an active Word document.
                 var wordDoc = Globals.ThisAddIn.Application.ActiveDocument;
                 if (wordDoc == null)
                 {
@@ -59,25 +73,42 @@ namespace ProseTools
                     return;
                 }
 
-                // Initialize the CharacterScanner
+                // Create a new CharacterScanner instance.
                 var scanner = new CharacterScanner();
-                var detectedNames = scanner.ScanForNames(wordDoc, chkBoxIgnoreFirstWord.Checked);
+                List<string> detectedNames = null;
 
-                // Clear existing items in the ListView
+                // Determine which scan method to use.
+                string selectedScan = cbWhichScan.SelectedItem?.ToString();
+                if (selectedScan == "Heuristic")
+                {
+                    // Use the existing heuristic scanning method.
+                    detectedNames = scanner.ScanForNames(wordDoc, chkBoxIgnoreFirstWord.Checked);
+                }
+                else if (selectedScan == "spaCy Scan")
+                {
+                    // For spaCy scan, extract the document text and process it asynchronously.
+                    string documentText = wordDoc.Content.Text;
+                    detectedNames = await scanner.ScanForNamesUsingSpacyAsync(documentText);
+                }
+                else
+                {
+                    MessageBox.Show("Unknown scan option selected.", "Error");
+                    return;
+                }
+
+                // Clear existing items in the ListView.
                 listViewCharacters.Items.Clear();
 
-                // Populate ListView with detected names
+                // Populate the ListView with the detected names.
                 foreach (var name in detectedNames)
                 {
-                    var listViewItem = new ListViewItem(name); // "Name Found" column
-                    listViewItem.SubItems.Add("");            // "Character Represented" column (initially empty)
+                    var listViewItem = new ListViewItem(name);
+                    listViewItem.SubItems.Add(""); // "Character Represented" (initially empty)
                     listViewCharacters.Items.Add(listViewItem);
                 }
 
                 SetCharacterCountParsingText(listViewCharacters.Items.Count, wordDoc.Words.Count);
-                // Show a message with the count of detected names
                 MessageBox.Show($"{detectedNames.Count} potential character names found!", "Scan Complete");
-
             }
             catch (Exception ex)
             {

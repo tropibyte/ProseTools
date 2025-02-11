@@ -76,7 +76,7 @@
             this.subtitle.Location = new System.Drawing.Point(17, 109);
             this.subtitle.Name = "subtitle";
             this.subtitle.Size = new System.Drawing.Size(412, 26);
-            this.subtitle.TabIndex = 1;
+            this.subtitle.TabIndex = 2;
             // 
             // label3
             // 
@@ -92,14 +92,14 @@
             this.author.Location = new System.Drawing.Point(17, 187);
             this.author.Name = "author";
             this.author.Size = new System.Drawing.Size(412, 26);
-            this.author.TabIndex = 1;
+            this.author.TabIndex = 3;
             // 
             // buttonStart
             // 
             this.buttonStart.Location = new System.Drawing.Point(470, 13);
             this.buttonStart.Name = "buttonStart";
             this.buttonStart.Size = new System.Drawing.Size(75, 23);
-            this.buttonStart.TabIndex = 2;
+            this.buttonStart.TabIndex = 8;
             this.buttonStart.Text = "Start";
             this.buttonStart.UseVisualStyleBackColor = true;
             this.buttonStart.Click += new System.EventHandler(this.buttonStart_Click);
@@ -109,7 +109,7 @@
             this.cancel.Location = new System.Drawing.Point(470, 42);
             this.cancel.Name = "cancel";
             this.cancel.Size = new System.Drawing.Size(75, 23);
-            this.cancel.TabIndex = 2;
+            this.cancel.TabIndex = 9;
             this.cancel.Text = "Cancel";
             this.cancel.UseVisualStyleBackColor = true;
             this.cancel.Click += new System.EventHandler(this.cancel_Click);
@@ -120,7 +120,7 @@
             this.dropDownFont.Location = new System.Drawing.Point(17, 264);
             this.dropDownFont.Name = "dropDownFont";
             this.dropDownFont.Size = new System.Drawing.Size(412, 28);
-            this.dropDownFont.TabIndex = 3;
+            this.dropDownFont.TabIndex = 4;
             // 
             // label4
             // 
@@ -154,7 +154,7 @@
             this.SetProseChapterFontInfoButton.Location = new System.Drawing.Point(353, 321);
             this.SetProseChapterFontInfoButton.Name = "SetProseChapterFontInfoButton";
             this.SetProseChapterFontInfoButton.Size = new System.Drawing.Size(75, 23);
-            this.SetProseChapterFontInfoButton.TabIndex = 6;
+            this.SetProseChapterFontInfoButton.TabIndex = 5;
             this.SetProseChapterFontInfoButton.Text = "Set...";
             this.SetProseChapterFontInfoButton.UseVisualStyleBackColor = true;
             this.SetProseChapterFontInfoButton.Click += new System.EventHandler(this.SetProseChapterFontInfoButton_Click);
@@ -164,7 +164,7 @@
             this.SetProseTextFontInfoButton.Location = new System.Drawing.Point(353, 406);
             this.SetProseTextFontInfoButton.Name = "SetProseTextFontInfoButton";
             this.SetProseTextFontInfoButton.Size = new System.Drawing.Size(75, 23);
-            this.SetProseTextFontInfoButton.TabIndex = 6;
+            this.SetProseTextFontInfoButton.TabIndex = 7;
             this.SetProseTextFontInfoButton.Text = "Set...";
             this.SetProseTextFontInfoButton.UseVisualStyleBackColor = true;
             this.SetProseTextFontInfoButton.Click += new System.EventHandler(this.SetProseTextFontInfoButton_Click);

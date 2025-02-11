@@ -54,6 +54,12 @@ namespace ProseTools
             Alias = new List<Name>();
         }
 
+        public Character()
+        {
+            Related = new List<(string, Name)>();
+            Alias = new List<Name>();
+        }
+
         // Add a relation
         public void AddRelation(string relation, Name relatedName)
         {
@@ -69,6 +75,74 @@ namespace ProseTools
         public override string ToString()
         {
             return $"{CharacterName} ({CharacterType}) - {Occupation}";
+        }
+
+        // Serialize to XML
+        public XElement ToXML()
+        {
+            return new XElement("Character",
+                new XElement("CharacterName", CharacterName.ToXML()),
+                new XElement("Occupation", Occupation),
+                new XElement("CharacterType", CharacterType),
+                new XElement("DateOfBirth", DateOfBirth?.ToString("o")), // ISO 8601 format
+                new XElement("Address", Address),
+                new XElement("Related",
+                    Related.Select(r => new XElement("Relation",
+                        new XElement("Type", r.Relation),
+                        new XElement("Name", r.RelatedName.ToXML())))),
+                new XElement("Alias",
+                    Alias.Select(a => a.ToXML()))
+            );
+        }
+
+        // Deserialize from XML
+        public static Character FromXML(XElement element)
+        {
+            if (element == null)
+                throw new ArgumentNullException(nameof(element), "Provided XML element is null.");
+
+            var character = new Character
+            {
+                CharacterName = element.Element("CharacterName") != null
+                    ? NameExtensions.FromXML(element.Element("CharacterName"))
+                    : null,
+                Occupation = element.Element("Occupation")?.Value,
+                CharacterType = element.Element("CharacterType")?.Value,
+                DateOfBirth = DateTime.TryParse(element.Element("DateOfBirth")?.Value, out DateTime dob) ? dob : (DateTime?)null,
+                Address = element.Element("Address")?.Value,
+                Related = element.Element("Related")?.Elements("Relation").Select(r => (
+                    Relation: r.Element("Type")?.Value,
+                    RelatedName: r.Element("Name") != null ? NameExtensions.FromXML(r.Element("Name")) : null
+                )).ToList(),
+                Alias = element.Element("Alias")?.Elements("Name").Select(NameExtensions.FromXML).ToList()
+            };
+
+            return character;
+        }
+    }
+
+    public static class NameExtensions
+    {
+        // Serialize Name to XML
+        public static XElement ToXML(this Name name)
+        {
+            return new XElement("Name",
+                new XElement("FirstName", name.FirstName),
+                new XElement("MiddleName", name.MiddleName),
+                new XElement("LastName", name.LastName),
+                new XElement("MaternalSurname", name.MaternalSurname)
+            );
+        }
+
+        // Deserialize Name from XML
+        public static Name FromXML(XElement element)
+        {
+            return new Name(
+                element.Element("FirstName")?.Value,
+                element.Element("LastName")?.Value,
+                element.Element("MiddleName")?.Value,
+                element.Element("MaternalSurname")?.Value
+            );
         }
     }
 }

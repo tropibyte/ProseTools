@@ -71,56 +71,56 @@
             // 
             this.txtFirstName.Location = new System.Drawing.Point(140, 17);
             this.txtFirstName.Name = "txtFirstName";
-            this.txtFirstName.Size = new System.Drawing.Size(200, 26);
+            this.txtFirstName.Size = new System.Drawing.Size(233, 26);
             this.txtFirstName.TabIndex = 1;
             // 
             // txtMiddleName
             // 
-            this.txtMiddleName.Location = new System.Drawing.Point(140, 47);
+            this.txtMiddleName.Location = new System.Drawing.Point(140, 49);
             this.txtMiddleName.Name = "txtMiddleName";
-            this.txtMiddleName.Size = new System.Drawing.Size(200, 26);
+            this.txtMiddleName.Size = new System.Drawing.Size(233, 26);
             this.txtMiddleName.TabIndex = 3;
             // 
             // txtLastName
             // 
-            this.txtLastName.Location = new System.Drawing.Point(140, 77);
+            this.txtLastName.Location = new System.Drawing.Point(140, 81);
             this.txtLastName.Name = "txtLastName";
-            this.txtLastName.Size = new System.Drawing.Size(200, 26);
+            this.txtLastName.Size = new System.Drawing.Size(233, 26);
             this.txtLastName.TabIndex = 5;
             // 
             // txtMaternalSurname
             // 
-            this.txtMaternalSurname.Location = new System.Drawing.Point(140, 107);
+            this.txtMaternalSurname.Location = new System.Drawing.Point(140, 113);
             this.txtMaternalSurname.Name = "txtMaternalSurname";
-            this.txtMaternalSurname.Size = new System.Drawing.Size(200, 26);
+            this.txtMaternalSurname.Size = new System.Drawing.Size(233, 26);
             this.txtMaternalSurname.TabIndex = 7;
             // 
             // txtOccupation
             // 
-            this.txtOccupation.Location = new System.Drawing.Point(140, 137);
+            this.txtOccupation.Location = new System.Drawing.Point(140, 145);
             this.txtOccupation.Name = "txtOccupation";
-            this.txtOccupation.Size = new System.Drawing.Size(200, 26);
+            this.txtOccupation.Size = new System.Drawing.Size(233, 26);
             this.txtOccupation.TabIndex = 9;
             // 
             // txtCharacterType
             // 
-            this.txtCharacterType.Location = new System.Drawing.Point(140, 167);
+            this.txtCharacterType.Location = new System.Drawing.Point(140, 177);
             this.txtCharacterType.Name = "txtCharacterType";
-            this.txtCharacterType.Size = new System.Drawing.Size(200, 26);
+            this.txtCharacterType.Size = new System.Drawing.Size(233, 26);
             this.txtCharacterType.TabIndex = 11;
             // 
             // txtDateOfBirth
             // 
-            this.txtDateOfBirth.Location = new System.Drawing.Point(140, 197);
+            this.txtDateOfBirth.Location = new System.Drawing.Point(140, 209);
             this.txtDateOfBirth.Name = "txtDateOfBirth";
-            this.txtDateOfBirth.Size = new System.Drawing.Size(200, 26);
+            this.txtDateOfBirth.Size = new System.Drawing.Size(233, 26);
             this.txtDateOfBirth.TabIndex = 13;
             // 
             // txtAddress
             // 
-            this.txtAddress.Location = new System.Drawing.Point(140, 227);
+            this.txtAddress.Location = new System.Drawing.Point(140, 241);
             this.txtAddress.Name = "txtAddress";
-            this.txtAddress.Size = new System.Drawing.Size(200, 26);
+            this.txtAddress.Size = new System.Drawing.Size(233, 26);
             this.txtAddress.TabIndex = 15;
             // 
             // lblFirstName
@@ -135,7 +135,7 @@
             // lblMiddleName
             // 
             this.lblMiddleName.AutoSize = true;
-            this.lblMiddleName.Location = new System.Drawing.Point(20, 50);
+            this.lblMiddleName.Location = new System.Drawing.Point(20, 52);
             this.lblMiddleName.Name = "lblMiddleName";
             this.lblMiddleName.Size = new System.Drawing.Size(101, 20);
             this.lblMiddleName.TabIndex = 2;
@@ -144,7 +144,7 @@
             // lblLastName
             // 
             this.lblLastName.AutoSize = true;
-            this.lblLastName.Location = new System.Drawing.Point(20, 80);
+            this.lblLastName.Location = new System.Drawing.Point(20, 84);
             this.lblLastName.Name = "lblLastName";
             this.lblLastName.Size = new System.Drawing.Size(86, 20);
             this.lblLastName.TabIndex = 4;
@@ -153,7 +153,7 @@
             // lblMaternalSurname
             // 
             this.lblMaternalSurname.AutoSize = true;
-            this.lblMaternalSurname.Location = new System.Drawing.Point(20, 110);
+            this.lblMaternalSurname.Location = new System.Drawing.Point(20, 116);
             this.lblMaternalSurname.Name = "lblMaternalSurname";
             this.lblMaternalSurname.Size = new System.Drawing.Size(140, 20);
             this.lblMaternalSurname.TabIndex = 6;
@@ -162,7 +162,7 @@
             // lblOccupation
             // 
             this.lblOccupation.AutoSize = true;
-            this.lblOccupation.Location = new System.Drawing.Point(20, 140);
+            this.lblOccupation.Location = new System.Drawing.Point(20, 148);
             this.lblOccupation.Name = "lblOccupation";
             this.lblOccupation.Size = new System.Drawing.Size(90, 20);
             this.lblOccupation.TabIndex = 8;
@@ -171,7 +171,7 @@
             // lblCharacterType
             // 
             this.lblCharacterType.AutoSize = true;
-            this.lblCharacterType.Location = new System.Drawing.Point(20, 170);
+            this.lblCharacterType.Location = new System.Drawing.Point(20, 180);
             this.lblCharacterType.Name = "lblCharacterType";
             this.lblCharacterType.Size = new System.Drawing.Size(117, 20);
             this.lblCharacterType.TabIndex = 10;
@@ -180,7 +180,7 @@
             // lblDateOfBirth
             // 
             this.lblDateOfBirth.AutoSize = true;
-            this.lblDateOfBirth.Location = new System.Drawing.Point(20, 200);
+            this.lblDateOfBirth.Location = new System.Drawing.Point(20, 212);
             this.lblDateOfBirth.Name = "lblDateOfBirth";
             this.lblDateOfBirth.Size = new System.Drawing.Size(99, 20);
             this.lblDateOfBirth.TabIndex = 12;
@@ -189,7 +189,7 @@
             // lblAddress
             // 
             this.lblAddress.AutoSize = true;
-            this.lblAddress.Location = new System.Drawing.Point(20, 230);
+            this.lblAddress.Location = new System.Drawing.Point(20, 244);
             this.lblAddress.Name = "lblAddress";
             this.lblAddress.Size = new System.Drawing.Size(68, 20);
             this.lblAddress.TabIndex = 14;
@@ -197,9 +197,9 @@
             // 
             // btnSave
             // 
-            this.btnSave.Location = new System.Drawing.Point(529, 20);
+            this.btnSave.Location = new System.Drawing.Point(396, 17);
             this.btnSave.Name = "btnSave";
-            this.btnSave.Size = new System.Drawing.Size(75, 23);
+            this.btnSave.Size = new System.Drawing.Size(87, 28);
             this.btnSave.TabIndex = 16;
             this.btnSave.Text = "Save";
             this.btnSave.UseVisualStyleBackColor = true;
@@ -207,9 +207,9 @@
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(529, 50);
+            this.btnCancel.Location = new System.Drawing.Point(396, 49);
             this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(75, 23);
+            this.btnCancel.Size = new System.Drawing.Size(87, 26);
             this.btnCancel.TabIndex = 17;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
@@ -219,7 +219,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(616, 482);
+            this.ClientSize = new System.Drawing.Size(516, 420);
             this.Controls.Add(this.lblFirstName);
             this.Controls.Add(this.txtFirstName);
             this.Controls.Add(this.lblMiddleName);
