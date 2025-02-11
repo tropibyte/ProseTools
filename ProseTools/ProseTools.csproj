@@ -439,6 +439,12 @@
     can be found.
   -->
   <ItemGroup>
+    <Compile Include="aiSettingsDlg.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="aiSettingsDlg.Designer.cs">
+      <DependentUpon>aiSettingsDlg.cs</DependentUpon>
+    </Compile>
     <Compile Include="Chapter.cs" />
     <Compile Include="Character.cs" />
     <Compile Include="CharacterForm.cs">
@@ -518,12 +524,19 @@
     <Compile Include="StartResearchPaper.Designer.cs">
       <DependentUpon>StartResearchPaper.cs</DependentUpon>
     </Compile>
+    <Compile Include="StartScreenplay.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="StartScreenplay.Designer.cs">
+      <DependentUpon>StartScreenplay.cs</DependentUpon>
+    </Compile>
     <Compile Include="StartTechnicalPaper.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="StartTechnicalPaper.Designer.cs">
       <DependentUpon>StartTechnicalPaper.cs</DependentUpon>
     </Compile>
+    <Compile Include="TechnicalPaperMetaData.cs" />
     <Compile Include="WordHelper.cs" />
     <Compile Include="WordParsingCount.cs">
       <SubType>Form</SubType>
@@ -532,6 +545,9 @@
       <DependentUpon>WordParsingCount.cs</DependentUpon>
     </Compile>
     <Compile Include="WordStyleInfo.cs" />
+    <EmbeddedResource Include="aiSettingsDlg.resx">
+      <DependentUpon>aiSettingsDlg.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="CharacterForm.resx">
       <DependentUpon>CharacterForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -574,6 +590,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="StartResearchPaper.resx">
       <DependentUpon>StartResearchPaper.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="StartScreenplay.resx">
+      <DependentUpon>StartScreenplay.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="WordParsingCount.resx">
       <DependentUpon>WordParsingCount.cs</DependentUpon>

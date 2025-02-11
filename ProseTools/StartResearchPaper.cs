@@ -66,6 +66,7 @@ namespace ProseTools
                 // Add logic to proceed with research paper creation
                 CreateResearchPaperStart(doc);
                 // Close the form
+                DialogResult = DialogResult.OK;
                 this.Close();
 
                 GC.Collect();
@@ -79,6 +80,7 @@ namespace ProseTools
 
         private void buttonCancel_Click(object sender, EventArgs e)
         {
+            DialogResult = DialogResult.Cancel;
             this.Close();
         }
 

@@ -8,11 +8,11 @@ using System.Xml.Linq;
 
 namespace ProseTools
 {
-    internal class ResearchPaperMetaData : ProseMetaData
+    internal class TechnicalPaperMetaData : ProseMetaData
     {
-        public ResearchPaperMetaData() { }
+        public TechnicalPaperMetaData() { }
 
-        public ResearchPaperMetaData(XElement metadataXml) { }
+        public TechnicalPaperMetaData(XElement metadataXml) { }
 
         public override void ReadFromActiveDocument() { }
 
@@ -23,7 +23,7 @@ namespace ProseTools
 
             var metadataXml = new XElement("ProseMetaData",
                 new XAttribute(XNamespace.Xmlns + "ns", MetadataNamespace),
-                new XElement("ProseType", "ResearchPaper")
+                new XElement("ProseType", "TechnicalPaper")
             );
 
             CustomXMLPart existingPart = doc.CustomXMLParts

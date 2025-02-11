@@ -96,11 +96,16 @@ namespace ProseTools
                 {
                     _ProseMetaData = null;
                 }
+
+                // Update the ribbon based on the new _ProseMetaData state.
+                Globals.Ribbons.ProseToolsRibbon.UpdateRibbonVisibility();
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"Error in DocumentChange: {ex.Message}");
             }
+
+
         }
 
         /// <summary>

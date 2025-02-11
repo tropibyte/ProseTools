@@ -11,7 +11,7 @@ namespace ProseTools
     {
         internal void SetGroupControlsEnabled(bool visible)
         {
-            
+
         }
 
         private void ProseToolsRibbon_Load(object sender, RibbonUIEventArgs e)
@@ -19,7 +19,7 @@ namespace ProseTools
             PopulateGenAIDropDown();
             PopulateProseTypeDropDown();
             SetGroupControlsEnabled(Globals.ThisAddIn.IsProseToolsTaskPaneVisible());
-            this.RibbonUI.Invalidate(); // Forces the ribbon to refresh
+            UpdateRibbonVisibility();
         }
 
         private void PopulateGenAIDropDown()
@@ -43,9 +43,9 @@ namespace ProseTools
             dropDownProseType.Items.Clear();
 
             dropDownProseType.Items.Add(CreateDropDownItem("Novel"));
-            dropDownProseType.Items.Add(CreateDropDownItem("Research Paper")); 
-            dropDownProseType.Items.Add(CreateDropDownItem("Technical Paper")); 
-            dropDownProseType.Items.Add(CreateDropDownItem("Screenplay")); 
+            dropDownProseType.Items.Add(CreateDropDownItem("Research Paper"));
+            dropDownProseType.Items.Add(CreateDropDownItem("Technical Paper"));
+            dropDownProseType.Items.Add(CreateDropDownItem("Screenplay"));
 
             // Optionally set a default selection
             dropDownProseType.SelectedItemIndex = 0; // Default to Narrative
@@ -82,41 +82,76 @@ namespace ProseTools
                 {
                     // Open StartBook.cs
                     StartBook startBook = new StartBook();
-                    startBook.ShowDialog();
+                    if(startBook.ShowDialog() == DialogResult.OK)
+                    {
+                        if(!(Globals.ThisAddIn._ProseMetaData is NovelMetaData))
+                        {
+                            MessageBox.Show("Error: Metadata is not for a Novel. Please start a new Novel and try again.", "Error");
+                            return;
+                        }
+                        // Update the ribbon visibility after the dialog closes
+                        UpdateRibbonVisibility();
+                    }
                 }
             }
-            else if(proseType == "Research Paper")
+            else if (proseType == "Research Paper")
             {
                 if (ShouldOpenStartResearchPaper())
                 {
                     // Open StartResearchPaper.cs
                     StartResearchPaper startResearchPaper = new StartResearchPaper();
-                    startResearchPaper.ShowDialog();
+                    if(startResearchPaper.ShowDialog() == DialogResult.OK)
+                    {
+                        // Update the ribbon visibility after the dialog closes
+                        UpdateRibbonVisibility();
+                    }
                 }
             }
-            else if(proseType == "Technical Paper")
+            else if (proseType == "Technical Paper")
             {
                 if (ShouldOpenStartTechnicalPaper())
                 {
                     // Open StartTechnicalPaper.cs
                     StartTechnicalPaper startTechnicalPaper = new StartTechnicalPaper();
-                    startTechnicalPaper.ShowDialog();
+                    if(startTechnicalPaper.ShowDialog() == DialogResult.OK)
+                    {
+                        // Update the ribbon visibility after the dialog closes
+                        UpdateRibbonVisibility();
+                    }
                 }
             }
-        }
+            else if (proseType == "Screenplay")
+            {
+                if (ShouldOpenStartScreenplay())
+                {
+                    // Open StartTechnicalPaper.cs
+                    StartScreenplay startScreenplay = new StartScreenplay();
+                    if(startScreenplay.ShowDialog() == DialogResult.OK)
+                    {
+                        // Update the ribbon visibility after the dialog closes
+                        UpdateRibbonVisibility();
+                    }
+                }
+            }        }
 
         private bool ShouldOpenStartResearchPaper()
         {
-            return IsActiveDocumentOpen();
+            return CanStartNewProse();
         }
 
         private bool ShouldOpenStartTechnicalPaper()
         {
-            return IsActiveDocumentOpen();
+            return CanStartNewProse();
         }
 
-        private bool IsActiveDocumentOpen()
-        { 
+        private bool ShouldOpenStartScreenplay()
+        {
+            return CanStartNewProse();
+        }
+
+        private bool CanStartNewProse()
+        {
+            // Check for an active document.
             var wordDoc = Globals.ThisAddIn.Application.ActiveDocument;
             if (wordDoc == null)
             {
@@ -124,12 +159,39 @@ namespace ProseTools
                 return false;
             }
 
+            // Check if a prose type has already been started.
+            if (Globals.ThisAddIn._ProseMetaData != null && !(Globals.ThisAddIn._ProseMetaData is NullMetaData))
+            {
+                MessageBox.Show("A prose type has already been started in this document.", "Information");
+                return false;
+            }
+
+            // Check if the document already has a Table of Contents.
+            if (wordDoc.TablesOfContents.Count > 0)
+            {
+                MessageBox.Show("The document already contains a Table of Contents.", "Information");
+                return false;
+            }
+
+            // All checks passed; the document is valid for starting a new prose.
             return true;
         }
 
+        //private bool IsActiveDocumentOpen()
+        //{
+        //    var wordDoc = Globals.ThisAddIn.Application.ActiveDocument;
+        //    if (wordDoc == null)
+        //    {
+        //        MessageBox.Show("No active Word document found. Please open a document and try again.", "Error");
+        //        return false;
+        //    }
+
+        //    return true;
+        //}
+
         private bool ShouldOpenStartBook()
         {
-            if(!IsActiveDocumentOpen())
+            if (!CanStartNewProse())
             {
                 return false;
             }
@@ -165,6 +227,18 @@ namespace ProseTools
             }
         }
 
+        private void aiSettingsButton_Click(object sender, RibbonControlEventArgs e)
+        {
+            string selectedText = genAIDropDown.SelectedItem != null
+                ? genAIDropDown.SelectedItem.Label
+                : genAIDropDown.Items[0].Label;
+            aiSettingsDlg aiSettingsDlg = new aiSettingsDlg(selectedText);
+            if (aiSettingsDlg.ShowDialog() == DialogResult.OK)
+            {
+                ;
+            }
+        }        
+        
         private void Outline_Click(object sender, RibbonControlEventArgs e)
         {
             if (Globals.ThisAddIn.Application.ActiveDocument == null)
@@ -197,5 +271,61 @@ namespace ProseTools
             GenAI_Login genAI_Login = new GenAI_Login();
             genAI_Login.ShowDialog();
         }
+
+        internal void UpdateRibbonVisibility()
+        {
+            // Get the current metadata from the global add-in.
+            var meta = Globals.ThisAddIn._ProseMetaData;
+
+            // Default: If no metadata (or NullMetaData), only show the proseGroup.
+            if (meta == null || meta is NullMetaData)
+            {
+                proseGroup.Visible = true;
+                novel.Visible = false;
+                researchPaper.Visible = false;
+                techPaper.Visible = false;
+                screenPlay.Visible = false;
+            }
+            // If the metadata is for a Novel, show the novel group only.
+            else if (meta is NovelMetaData)
+            {
+                proseGroup.Visible = false;
+                novel.Visible = true;
+                researchPaper.Visible = false;
+                techPaper.Visible = false;
+                screenPlay.Visible = false;
+            }
+            // If it's a Research Paper, show the researchPaper group only.
+            else if (meta is ResearchPaperMetaData)
+            {
+                proseGroup.Visible = false;
+                novel.Visible = false;
+                researchPaper.Visible = true;
+                techPaper.Visible = false;
+                screenPlay.Visible = false;
+            }
+            // If it's a Technical Paper, show the techPaper group only.
+            else if (meta is TechnicalPaperMetaData)
+            {
+                proseGroup.Visible = false;
+                novel.Visible = false;
+                researchPaper.Visible = false;
+                techPaper.Visible = true;
+                screenPlay.Visible = false;
+            }
+            // If it's a Screenplay, show the screenPlay group only.
+            else if (meta is ScreenplayMetaData)
+            {
+                proseGroup.Visible = false;
+                novel.Visible = false;
+                researchPaper.Visible = false;
+                techPaper.Visible = false;
+                screenPlay.Visible = true;
+            }
+
+            // Force the ribbon to refresh so the changes appear immediately.
+            this.RibbonUI.Invalidate();
+        }
+
     }
 }

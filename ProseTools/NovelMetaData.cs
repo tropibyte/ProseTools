@@ -14,7 +14,6 @@ namespace ProseTools
         public List<Location> ListLocations { get; set; }
         public List<Scene> ListScenes { get; set; }
         public List<Note> ListNotes { get; set; }
-        public Outline TheOutline { get; set; }
 
         public NovelMetaData()
         {
@@ -23,7 +22,6 @@ namespace ProseTools
             ListLocations = new List<Location>();
             ListScenes = new List<Scene>();
             ListNotes = new List<Note>();
-            TheOutline = new Outline();
         }
 
         public NovelMetaData(XElement metadataXml) : this()

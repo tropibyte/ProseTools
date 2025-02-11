@@ -14,10 +14,15 @@ namespace ProseTools
     internal abstract class ProseMetaData
     {
         protected const string MetadataNamespace = "urn:prosetools:metadata";
+        public Outline TheOutline { get; set; }
 
         public abstract void ReadFromActiveDocument();
         public abstract void WriteToActiveDocument();
 
+        public ProseMetaData()
+        {
+            TheOutline = new Outline();
+        }
         /// <summary>
         /// Factory method to determine prose type and return the correct metadata class.
         /// </summary>

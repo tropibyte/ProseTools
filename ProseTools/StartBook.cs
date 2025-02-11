@@ -140,10 +140,11 @@ namespace ProseTools
 
                 CreateBookStart(doc);
                 // Close the form
+                DialogResult = DialogResult.OK;
                 this.Close();
 
-                GC.Collect();
-                GC.WaitForPendingFinalizers();
+                //GC.Collect();
+                //GC.WaitForPendingFinalizers();
 
             }
             catch (Exception ex)
@@ -154,6 +155,7 @@ namespace ProseTools
 
         private void cancel_Click(object sender, EventArgs e)
         {
+            DialogResult = DialogResult.Cancel;
             Close();
         }
 
