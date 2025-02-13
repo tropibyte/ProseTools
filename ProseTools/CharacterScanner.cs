@@ -1,11 +1,20 @@
 ﻿using Microsoft.Office.Interop.Word;
 using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Python.Runtime;
+using opennlp.tools.namefind;
+using opennlp.tools.tokenize;
+using opennlp.tools.util;
+using com.sun.tools.javac.parser;
+using com.sun.imageio.plugins.common;
+using System.IO.Pipes;
+
+
 
 namespace ProseTools
 {
@@ -18,14 +27,14 @@ namespace ProseTools
         private static dynamic _spacyNlp = null;
 
         // Words that we never consider as part of a proper name.
-        private readonly HashSet<string> _excludedWords = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+        private readonly System.Collections.Generic.HashSet<string> _excludedWords = new System.Collections.Generic.HashSet<string>(StringComparer.OrdinalIgnoreCase)
         {
             "The", "A", "An", "And", "But", "Or", "Nor", "Yet", "So", "At", "By",
             "For", "In", "Of", "On", "To", "With", "Is", "Are", "Was", "Were"
         };
 
         // Titles that may indicate a proper name sequence.
-        private readonly HashSet<string> _titles = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+        private readonly System.Collections.Generic.HashSet<string> _titles = new System.Collections.Generic.HashSet<string>(StringComparer.OrdinalIgnoreCase)
         {
             "Prof.", "Dr.", "Mr.", "Mrs.", "Ms.", "Sr.", "Sra.", "Miss."
         };
@@ -125,7 +134,7 @@ namespace ProseTools
             }
 
             wordParsingCount.SetWordCountParsingText("Processing duplicates...");
-            var uniqueNames = new HashSet<string>(potentialNames, StringComparer.OrdinalIgnoreCase);
+            var uniqueNames = new System.Collections.Generic.HashSet<string>(potentialNames, StringComparer.OrdinalIgnoreCase);
             wordParsingCount.Close();
 
             return uniqueNames.ToList();
@@ -195,6 +204,8 @@ namespace ProseTools
                 {
                     dynamic spacy = Py.Import("spacy");
                     _spacyNlp = spacy.load("en_core_web_sm");
+
+
                 }
             }
         }
@@ -251,21 +262,84 @@ namespace ProseTools
         }
 
         /// <summary>
-        /// Asynchronously scans the provided text for person names using spaCy.
-        /// If the text is large, it is split into chunks, processed individually,
-        /// and the results are merged and deduplicated.
+        /// Scans the provided text for person names using OpenNLP.
+        /// Splits the text into chunks if necessary, tokenizes each chunk, and applies name finding.
         /// </summary>
-        public async Task<List<string>> ScanForNamesUsingSpacyAsync(string text)
+        /// 
+        public List<string> ScanForNamesUsingOpenNLP(string text)
         {
-            return await System.Threading.Tasks.Task.Run(() =>
+            // Split the text into words.
+            var allWords = text.Split(new char[] { ' ', '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+            // Split the text into chunks if there are too many words.
+            List<string> chunks = (allWords.Length > ChunkWordThreshold)
+                ? SplitTextIntoChunks(text, ChunkWordThreshold)
+                : new List<string> { text };
+
+            var allNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+            // Build relative path for the name finder model.
+            string baseDir = AppDomain.CurrentDomain.BaseDirectory;
+            string modelFolder = Path.Combine(baseDir, "NLPModels");
+            string nameFinderModelPath = Path.Combine(modelFolder, "en-ner-person.bin");
+
+            if (!File.Exists(nameFinderModelPath))
             {
-                var allNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                MessageBox.Show("Model file not found. Please ensure en-ner-person.bin is in the NLPModels folder.",
+                                "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return allNames.ToList();
+            }
+
+            using (var modelStream = new FileStream(nameFinderModelPath, FileMode.Open, FileAccess.Read))
+            {
+                // Wrap the FileStream as a java.io.InputStream.
+                java.io.InputStream javaStream = new ikvm.io.InputStreamWrapper(modelStream);
+                var model = new TokenNameFinderModel(javaStream);
+                var nameFinder = new NameFinderME(model);
+
+                // Process each chunk.
+                foreach (string chunk in chunks)
+                {
+                    // Convert the chunk to tokens.
+                    string[] tokens = chunk.Split(new char[] { ' ', '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+                    // Find name spans in this token array.
+                    Span[] nameSpans = nameFinder.find(tokens);
+                    foreach (var span in nameSpans)
+                    {
+                        // Get start and end indices.
+                        int start = span.getStart();
+                        int end = span.getEnd(); // 'end' is exclusive.
+                                                 // Join the tokens for this span with a space between them.
+                        string name = string.Join(" ", tokens.Skip(start).Take(end - start));
+                        if (!string.IsNullOrEmpty(name))
+                        {
+                            allNames.Add(name.Trim());
+                        }
+                    }
+                }
+            }
+
+            return allNames.ToList();
+        }
+
+        public List<string> ScanForNamesUsingSpacy(string text)
+        {
+            int x = 11;
+
+            if (x > 0)
+            {
+                MessageBox.Show("SpaCy is not available in this version of the software.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return new List<string>();
+            }
+                //return System.Threading.Tasks.Task.Run(() =>
+            {
+                var allNames = new System.Collections.Generic.HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
                 try
                 {
                     // Correct order: Initialize first, then import sys.
                     if (!PythonEngine.IsInitialized)
                     {
+                        Console.Write("Hello, PythonNET!");
                         PythonEngine.Initialize();
                     }
 
@@ -307,7 +381,7 @@ namespace ProseTools
                 }
 
                 return allNames.ToList();
-            });
+            }//);
         }
     }
 

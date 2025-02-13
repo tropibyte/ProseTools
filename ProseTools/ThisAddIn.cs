@@ -5,6 +5,10 @@ using Microsoft.Office.Tools.Word;
 using Python.Runtime;
 using System.IO;
 using System.Windows.Forms;
+using Microsoft.Office.Interop.Word;
+using System.Collections.Generic;
+using System.ComponentModel;
+
 
 namespace ProseTools
 {
@@ -13,20 +17,6 @@ namespace ProseTools
     {
         private Microsoft.Office.Tools.CustomTaskPane MyProseToolsTaskPane;
         internal ProseMetaData _ProseMetaData { get; set; }
-
-        internal static class RuntimeInitializer
-        {
-            static RuntimeInitializer()
-            {
- //               Runtime.PythonDLL = EnsurePythonNetDll();
-            }
-
-            public static void Initialize()
-            {
-                // This method is intentionally left empty.
-                // It exists to trigger the static constructor.
-            }
-        }
 
         private void ThisAddIn_Startup(object sender, System.EventArgs e)
         {
@@ -39,8 +29,7 @@ namespace ProseTools
 
             // Initialize the Python runtime
             InitializePython();
-            // Set the PythonDLL in a static constructor
-            RuntimeInitializer.Initialize();
+
         }
 
         private void ThisAddIn_Shutdown(object sender, System.EventArgs e)
@@ -54,6 +43,7 @@ namespace ProseTools
                 MyProseToolsTaskPane.VisibleChanged -= MyProseToolsTaskPane_VisibleChanged;
                 MyProseToolsTaskPane = null;
             }
+
             if(PythonEngine.IsInitialized)
                 PythonEngine.Shutdown();
         }
@@ -104,7 +94,7 @@ namespace ProseTools
                 System.Diagnostics.Debug.WriteLine($"Error in DocumentChange: {ex.Message}");
             }
 
-
+            Globals.Ribbons.ProseToolsRibbon.UpdateRibbonVisibility();
         }
 
         /// <summary>
@@ -151,7 +141,7 @@ namespace ProseTools
 
             string path = pythonHome + ";" + Environment.GetEnvironmentVariable("PATH", EnvironmentVariableTarget.Machine);
             Environment.SetEnvironmentVariable("PATH", path, EnvironmentVariableTarget.Process);
-            
+
             try
             {
                 // Initialize the Python engine if it has not already been initialized.
@@ -167,7 +157,6 @@ namespace ProseTools
                 return;
             }
         }
-
 
         public static string DeducePythonDll()
         {
