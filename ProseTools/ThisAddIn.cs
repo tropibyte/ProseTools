@@ -54,6 +54,8 @@ namespace ProseTools
                 MyProseToolsTaskPane.VisibleChanged -= MyProseToolsTaskPane_VisibleChanged;
                 MyProseToolsTaskPane = null;
             }
+            if(PythonEngine.IsInitialized)
+                PythonEngine.Shutdown();
         }
 
         /// <summary>
@@ -96,9 +98,6 @@ namespace ProseTools
                 {
                     _ProseMetaData = null;
                 }
-
-                // Update the ribbon based on the new _ProseMetaData state.
-                Globals.Ribbons.ProseToolsRibbon.UpdateRibbonVisibility();
             }
             catch (Exception ex)
             {
