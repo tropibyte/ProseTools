@@ -104,148 +104,105 @@ namespace ProseTools
         /// </summary>
         public static void InitializePython()
         {
-            string pythonHome = Environment.GetEnvironmentVariable("PYTHONHOME");
-            if (pythonHome == null)
+            // 1. Set PYTHONHOME (use bundled runtime if not found)
+            string pythonHome = Environment.GetEnvironmentVariable("PYTHONHOME", EnvironmentVariableTarget.Process)
+                                 ?? Environment.GetEnvironmentVariable("PYTHONHOME", EnvironmentVariableTarget.Machine);
+            if (string.IsNullOrEmpty(pythonHome) || !Directory.Exists(pythonHome))
             {
-                pythonHome = Environment.GetEnvironmentVariable("PYTHONHOME", EnvironmentVariableTarget.Machine);
+                // Assume your bundled Python runtime is in a "python" folder next to your executable.
+                pythonHome = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "python");
+                if (!Directory.Exists(pythonHome))
+                {
+                    MessageBox.Show("Python runtime not found. Ensure that PYTHONHOME is set or the bundled runtime exists.",
+                                    "Initialization Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+                Environment.SetEnvironmentVariable("PYTHONHOME", pythonHome, EnvironmentVariableTarget.Process);
             }
 
-            if (pythonHome == null)
-            {
-                // Get the directory of the current executable.
-                string baseDir = AppDomain.CurrentDomain.BaseDirectory;
-                // Set the path to your bundled Python runtime.
-                // For example, if you have unzipped the Python embeddable package into a folder named "python".
-                pythonHome = Path.Combine(baseDir, "python");
-                // Set environment variables so Python.NET knows where to find the Python installation.
-                Environment.SetEnvironmentVariable("PYTHONHOME", pythonHome);
-                PythonEngine.PythonHome = pythonHome;
-            }
-
-            string pythonPath = Environment.GetEnvironmentVariable("PYTHONPATH");
-            if (pythonPath == null)
+            // 2. Set PYTHONPATH to the Lib folder of your Python runtime.
+            string pythonPath = Environment.GetEnvironmentVariable("PYTHONPATH", EnvironmentVariableTarget.Process);
+            if (string.IsNullOrEmpty(pythonPath))
             {
                 pythonPath = Path.Combine(pythonHome, "Lib");
-                // Set the path to the Python standard library.
-                Environment.SetEnvironmentVariable("PYTHONPATH", pythonPath);
+                Environment.SetEnvironmentVariable("PYTHONPATH", pythonPath, EnvironmentVariableTarget.Process);
             }
 
-            string pythonDllPath = EnsurePythonNetDll();
-            string python313 = Environment.GetEnvironmentVariable("PYTHONNET_PYDLL", EnvironmentVariableTarget.Machine);
-
-            if (pythonDllPath == null)
+            // 3. Deduce and set the Python DLL via PYTHONNET_PYDLL.
+            string pythonDll = Environment.GetEnvironmentVariable("PYTHONNET_PYDLL", EnvironmentVariableTarget.Process)
+                               ?? DeducePythonDll(pythonHome);
+            if (string.IsNullOrEmpty(pythonDll) || !File.Exists(pythonDll))
             {
-                MessageBox.Show("Could not find Python DLL. Please ensure that the Python runtime is installed and PYTHONHOME is set correctly.", "ProseTools Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Could not find the Python DLL. Ensure your Python runtime is complete and properly located.",
+                                "Initialization Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
+            Environment.SetEnvironmentVariable("PYTHONNET_PYDLL", pythonDll, EnvironmentVariableTarget.Process);
 
-            string path = pythonHome + ";" + Environment.GetEnvironmentVariable("PATH", EnvironmentVariableTarget.Machine);
-            Environment.SetEnvironmentVariable("PATH", path, EnvironmentVariableTarget.Process);
+            // 4. Optionally update the PATH so that dependencies can be found.
+            string currentPath = Environment.GetEnvironmentVariable("PATH", EnvironmentVariableTarget.Process);
+            Environment.SetEnvironmentVariable("PATH", pythonHome + ";" + currentPath, EnvironmentVariableTarget.Process);
 
+            // 5. Initialize Python.NET.
             try
             {
-                // Initialize the Python engine if it has not already been initialized.
                 if (!PythonEngine.IsInitialized)
                 {
-                    PythonEngine.Initialize();  //Continues to generate an exception
+                    PythonEngine.Initialize();
                 }
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Error initializing Python: {ex.Message}");
-                MessageBox.Show("Error initializing Python: " + ex.Message, "ProseTools Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Error initializing Python: " + ex.Message, "Initialization Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
+
+            // Now you can run Python code safely.
+            //using (Py.GIL())
+            //{
+            //    // Example: Import and use a module.
+            //    dynamic math = Py.Import("math");
+            //    double result = math.sqrt(16);
+            //    MessageBox.Show($"The square root of 16 is {result}", "Python Result", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            //}
         }
 
-        public static string DeducePythonDll()
+        /// <summary>
+        /// Deduce the full path to the Python DLL from the given pythonHome directory.
+        /// </summary>
+        /// <param name="pythonHome">The base directory of the Python runtime.</param>
+        /// <returns>The full path to the Python DLL, or null if not found.</returns>
+        public static string DeducePythonDll(string pythonHome)
         {
-            // First, try to get PYTHONHOME from the machine environment variables.
-            string pythonHome = Environment.GetEnvironmentVariable("PYTHONHOME", EnvironmentVariableTarget.Machine);
-            if (string.IsNullOrEmpty(pythonHome))
-            {
-                // Fall back to the process environment if necessary.
-                pythonHome = Environment.GetEnvironmentVariable("PYTHONHOME");
-            }
-
-            if (string.IsNullOrEmpty(pythonHome) || !Directory.Exists(pythonHome))
-            {
-                return null;
-            }
-
-            // Get the final folder name of the PYTHONHOME path.
-            string folderName = Path.GetFileName(pythonHome.TrimEnd(Path.DirectorySeparatorChar));
-            if (string.IsNullOrEmpty(folderName))
-            {
-                return null;
-            }
-
+            // Get the folder name (e.g., "Python38") and try to extract the version.
+            string folderName = new DirectoryInfo(pythonHome).Name;
             string versionPart = string.Empty;
-            // If the folder name starts with "Python" (case-insensitive), extract the version part.
             if (folderName.StartsWith("Python", StringComparison.OrdinalIgnoreCase))
             {
                 versionPart = folderName.Substring("Python".Length);
             }
 
-            // If we obtained a version part, construct the expected DLL name.
+            // If a version is available, try the expected DLL name.
             if (!string.IsNullOrEmpty(versionPart))
             {
-                string expectedDllName = "python" + versionPart + ".dll";
-                string potentialDllPath = Path.Combine(pythonHome, expectedDllName);
-                if (File.Exists(potentialDllPath))
+                string expectedDll = $"python{versionPart}.dll";
+                string dllPath = Path.Combine(pythonHome, expectedDll);
+                if (File.Exists(dllPath))
                 {
-                    return potentialDllPath;
+                    return dllPath;
                 }
             }
 
-            // Fallback: search for any DLL in PYTHONHOME that matches "python*.dll"
+            // Fallback: search for any file matching "python*.dll" in the pythonHome folder.
             string[] dllFiles = Directory.GetFiles(pythonHome, "python*.dll");
             if (dllFiles != null && dllFiles.Length > 0)
             {
-                // For example, return the first match.
-                return dllFiles[0];
+                return dllFiles[0]; // Return the first match.
             }
 
-            // If nothing is found, return null.
             return null;
         }
 
-        public static string EnsurePythonNetDll()
-        {
-            // Check the process-level environment variable first.
-            string dllPath = Environment.GetEnvironmentVariable("PYTHONNET_PYDLL", EnvironmentVariableTarget.Process);
-            if (string.IsNullOrWhiteSpace(dllPath))
-            {
-                // If not found, check the machine-level variable.
-                dllPath = Environment.GetEnvironmentVariable("PYTHONNET_PYDLL");
-                if (string.IsNullOrWhiteSpace(dllPath))
-                {
-                    // If not found, check the machine-level variable.
-                    dllPath = Environment.GetEnvironmentVariable("PYTHONNET_PYDLL", EnvironmentVariableTarget.Machine);
-                }
-
-            }
-
-            // If already set, return it.
-            if (!string.IsNullOrWhiteSpace(dllPath))
-            {
-                return dllPath;
-            }
-
-            // Otherwise, try to deduce the DLL path.
-            dllPath = DeducePythonDll();
-            if (!string.IsNullOrWhiteSpace(dllPath))
-            {
-                // Set it in the process environment so that Python.NET can use it.
-                Environment.SetEnvironmentVariable("PYTHONNET_PYDLL", dllPath, EnvironmentVariableTarget.Machine);
-                Environment.SetEnvironmentVariable("PYTHONNET_PYDLL", dllPath, EnvironmentVariableTarget.Process);
-                Environment.SetEnvironmentVariable("PYTHONNET_PYDLL", dllPath, EnvironmentVariableTarget.User);
-                return dllPath;
-            }
-
-            // Could not deduce the DLL; return null or throw an exception as desired.
-            return null;
-        }
         /// <summary>
         /// Displays the ProseTools task pane.
         /// If the task pane has not been created, it is created and a visibility handler is added.

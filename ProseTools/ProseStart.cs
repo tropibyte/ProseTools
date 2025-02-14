@@ -30,6 +30,22 @@ namespace ProseTools
             newSectionRange.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphLeft;
         }
 
+        public static void InsertSection(Section section, WdCollapseDirection wdCollapse, WdBreakType wdBreakType)
+        {
+            // Insert the appropriate section break
+            section.Range.Collapse(wdCollapse);
+            section.Range.InsertBreak(wdBreakType);
+
+            // Configure the newly created section
+            var newSection = section;
+
+            // Set the vertical alignment to top
+            newSection.PageSetup.VerticalAlignment = WdVerticalAlignment.wdAlignVerticalTop;
+
+            // Set the horizontal alignment to left
+            var newSectionRange = newSection.Range;
+            newSectionRange.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphLeft;
+        }
         public static void ConfigureTOCForCustomStyle(Document doc, string styleName, int tocLevel)
         {
             if (doc.TablesOfContents.Count > 0)

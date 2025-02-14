@@ -630,6 +630,12 @@
       <DependentUpon>CharacterManagement.cs</DependentUpon>
     </Compile>
     <Compile Include="CharacterScanner.cs" />
+    <Compile Include="EditNameDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="EditNameDialog.Designer.cs">
+      <DependentUpon>EditNameDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="GenAIConfig.cs" />
     <Compile Include="GenAI_Login.cs">
       <SubType>Form</SubType>
@@ -644,6 +650,12 @@
     </Compile>
     <Compile Include="ManageCharacters.Designer.cs">
       <DependentUpon>ManageCharacters.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MetadataManagerForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MetadataManagerForm.Designer.cs">
+      <DependentUpon>MetadataManagerForm.cs</DependentUpon>
     </Compile>
     <Compile Include="NewChapterDialog.cs">
       <SubType>Form</SubType>
@@ -733,8 +745,14 @@
     <EmbeddedResource Include="CharacterManagement.resx">
       <DependentUpon>CharacterManagement.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="EditNameDialog.resx">
+      <DependentUpon>EditNameDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ManageCharacters.resx">
       <DependentUpon>ManageCharacters.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MetadataManagerForm.resx">
+      <DependentUpon>MetadataManagerForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="NewChapterDialog.resx">
       <DependentUpon>NewChapterDialog.cs</DependentUpon>
@@ -893,6 +911,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="ILLink\ILLink.Descriptors.LibraryBuild.xml" />
+    <None Include="metadata.png" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

@@ -75,46 +75,63 @@ namespace ProseTools
 
         private void startProse_Click(object sender, RibbonControlEventArgs e)
         {
-            // Get the selected prose type from the dropdown
+            // Get the selected prose type from the dropdown.
             string proseType = dropDownProseType.SelectedItem?.Label;
-
-            if(string.IsNullOrEmpty(proseType))
+            if (string.IsNullOrEmpty(proseType))
             {
                 MessageBox.Show("Please select a prose type from the dropdown.", "Error");
                 return;
             }
 
-            // Get the active Word application and document
+            // Get the active Word application and document.
             var wordApp = Globals.ThisAddIn.Application;
             var doc = wordApp.ActiveDocument;
-
             if (doc == null)
             {
                 MessageBox.Show("No active document found.", "Error");
                 return;
             }
 
-            if (doc.Content.Words.Count > 1 || doc.Content.Text.Trim().Length != 0)
+            bool documentHasText = (doc.Content.Words.Count > 1 || doc.Content.Text.Trim().Length != 0);
+
+            // For documents with text, only allow metadata creation if no metadata has been added yet,
+            // or if the metadata is the default "NullMetaData".
+            if (documentHasText)
             {
-                AddProseToolsToExistingDocument(doc, proseType);
-                return;
+                if (Globals.ThisAddIn._ProseMetaData != null && !(Globals.ThisAddIn._ProseMetaData is NullMetaData))
+                {
+                    MessageBox.Show("Metadata has already been added to this document. Cannot add new metadata.",
+                                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                // Optional: Ask the user to confirm that they want to add metadata to an existing document.
+                DialogResult result = MessageBox.Show(
+                    $"The document already contains text. Do you want to add {proseType} metadata?",
+                    "Add Metadata",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Question);
+
+                if (result != DialogResult.Yes)
+                {
+                    return;
+                }
             }
 
-            // Check the selected prose type and open the corresponding dialog
+            // Now, open the appropriate dialog based on the prose type.
             if (proseType == "Novel" || proseType == "Book")
             {
                 if (ShouldOpenStartBook())
                 {
-                    // Open StartBook.cs
                     StartBook startBook = new StartBook();
-                    if(startBook.ShowDialog() == DialogResult.OK)
+                    if (startBook.ShowDialog() == DialogResult.OK)
                     {
-                        if(!(Globals.ThisAddIn._ProseMetaData is NovelMetaData))
+                        if (!(Globals.ThisAddIn._ProseMetaData is NovelMetaData))
                         {
-                            MessageBox.Show("Error: Metadata is not for a Novel. Please start a new Novel and try again.", "Error");
+                            MessageBox.Show("Error: Metadata is not for a Novel. Please start a new Novel and try again.",
+                                            "Error");
                             return;
                         }
-                        // Update the ribbon visibility after the dialog closes
                         UpdateRibbonVisibility();
                     }
                 }
@@ -123,11 +140,9 @@ namespace ProseTools
             {
                 if (ShouldOpenStartResearchPaper())
                 {
-                    // Open StartResearchPaper.cs
                     StartResearchPaper startResearchPaper = new StartResearchPaper();
-                    if(startResearchPaper.ShowDialog() == DialogResult.OK)
+                    if (startResearchPaper.ShowDialog() == DialogResult.OK)
                     {
-                        // Update the ribbon visibility after the dialog closes
                         UpdateRibbonVisibility();
                     }
                 }
@@ -136,11 +151,9 @@ namespace ProseTools
             {
                 if (ShouldOpenStartTechnicalPaper())
                 {
-                    // Open StartTechnicalPaper.cs
                     StartTechnicalPaper startTechnicalPaper = new StartTechnicalPaper();
-                    if(startTechnicalPaper.ShowDialog() == DialogResult.OK)
+                    if (startTechnicalPaper.ShowDialog() == DialogResult.OK)
                     {
-                        // Update the ribbon visibility after the dialog closes
                         UpdateRibbonVisibility();
                     }
                 }
@@ -149,15 +162,13 @@ namespace ProseTools
             {
                 if (ShouldOpenStartScreenplay())
                 {
-                    // Open StartTechnicalPaper.cs
                     StartScreenplay startScreenplay = new StartScreenplay();
-                    if(startScreenplay.ShowDialog() == DialogResult.OK)
+                    if (startScreenplay.ShowDialog() == DialogResult.OK)
                     {
-                        // Update the ribbon visibility after the dialog closes
                         UpdateRibbonVisibility();
                     }
                 }
-            }        
+            }
         }
 
         private void AddProseToolsToExistingDocument(Document doc, string proseType)
@@ -365,60 +376,57 @@ namespace ProseTools
 
         internal void UpdateRibbonVisibility()
         {
-            // Get the current metadata from the global add-in.
-            //var meta = Globals.ThisAddIn._ProseMetaData;
+            // Get the current metadata from the global add -in.
+            var meta = Globals.ThisAddIn._ProseMetaData;
 
-            //// Default: If no metadata (or NullMetaData), only show the proseGroup.
-            //if (meta == null || meta is NullMetaData)
-            //{
-            //    proseGroup.Visible = true;
-            //    novel.Visible = false;
-            //    researchPaper.Visible = false;
-            //    techPaper.Visible = false;
-            //    screenPlay.Visible = false;
-            //}
-            //// If the metadata is for a Novel, show the novel group only.
-            //else if (meta is NovelMetaData)
-            //{
-            //    proseGroup.Visible = false;
-            //    novel.Visible = true;
-            //    researchPaper.Visible = false;
-            //    techPaper.Visible = false;
-            //    screenPlay.Visible = false;
-            //}
-            //// If it's a Research Paper, show the researchPaper group only.
-            //else if (meta is ResearchPaperMetaData)
-            //{
-            //    proseGroup.Visible = false;
-            //    novel.Visible = false;
-            //    researchPaper.Visible = true;
-            //    techPaper.Visible = false;
-            //    screenPlay.Visible = false;
-            //}
-            //// If it's a Technical Paper, show the techPaper group only.
-            //else if (meta is TechnicalPaperMetaData)
-            //{
-            //    proseGroup.Visible = false;
-            //    novel.Visible = false;
-            //    researchPaper.Visible = false;
-            //    techPaper.Visible = true;
-            //    screenPlay.Visible = false;
-            //}
-            //// If it's a Screenplay, show the screenPlay group only.
-            //else if (meta is ScreenplayMetaData)
-            //{
-            //    proseGroup.Visible = false;
-            //    novel.Visible = false;
-            //    researchPaper.Visible = false;
-            //    techPaper.Visible = false;
-            //    screenPlay.Visible = true;
-            //}
+            // Default: If no metadata (or NullMetaData), only show the proseGroup.
+            if (meta == null || meta is NullMetaData)
+            {
+                ShowProseGroups(true);
+                ShowNovelGroups(false);
+                ShowResearchPaperGroups(false);
+                ShowTechPaperGroups(false);
+                ShowScreenPlayGroups(false);
+            }
+            // If the metadata is for a Novel, show the novel group only.
+            else if (meta is NovelMetaData)
+            {
+                ShowProseGroups(false);
+                ShowNovelGroups(true);
+                ShowResearchPaperGroups(false);
+                ShowTechPaperGroups(false);
+                ShowScreenPlayGroups(false);
+            }
+            // If it's a Research Paper, show the researchPaper group only.
+            else if (meta is ResearchPaperMetaData)
+            {
+                ShowProseGroups(false);
+                ShowNovelGroups(false);
+                ShowResearchPaperGroups(true);
+                ShowTechPaperGroups(false);
+                ShowScreenPlayGroups(false);
+            }
+            // If it's a Technical Paper, show the techPaper group only.
+            else if (meta is TechnicalPaperMetaData)
+            {
+                ShowProseGroups(false);
+                ShowNovelGroups(false);
+                ShowResearchPaperGroups(false);
+                ShowTechPaperGroups(true);
+                ShowScreenPlayGroups(false);
+            }
+            // If it's a Screenplay, show the screenPlay group only.
+            else if (meta is ScreenplayMetaData)
+            {
+                ShowProseGroups(false);
+                ShowNovelGroups(false);
+                ShowResearchPaperGroups(false);
+                ShowTechPaperGroups(false);
+                ShowScreenPlayGroups(true);
+            }
 
-            proseGroup.Visible = true;
-            novel.Visible = true;
-            researchPaper.Visible = true;
-            techPaper.Visible = true;
-            screenPlay.Visible = true;
+            //Temporarily hide Open ProseTools button
+            btnOpenProseTools.Visible = false;
 
             // Update the Start Prose button label and enable/disable state.
             UpdateStartProseButton();
@@ -430,7 +438,8 @@ namespace ProseTools
         internal void UpdateStartProseButton()
         {
             // Check for an active document.
-            var wordDoc = Globals.ThisAddIn.Application.ActiveDocument;
+            var wordApp = Globals.ThisAddIn.Application;  //.ActiveDocument;
+            var wordDoc = (wordApp.Documents.Count == 0) ? null : wordApp.ActiveDocument;
             if (wordDoc == null ||
                 ((Globals.ThisAddIn._ProseMetaData == null || Globals.ThisAddIn._ProseMetaData is NullMetaData) &&
                  wordDoc.Content.Text.Trim().Length == 0)) // Use Trim() here
@@ -453,5 +462,36 @@ namespace ProseTools
             }
         }
 
+        internal void ShowProseGroups(bool bShow)
+        {
+            proseGroup.Visible = bShow;
+        }
+
+        internal void ShowNovelGroups(bool bShow)
+        {
+            novel.Visible = bShow;
+            character.Visible = bShow;
+        }
+
+        internal void ShowResearchPaperGroups(bool bShow)
+        {
+            researchPaper.Visible = bShow;
+        }
+
+        internal void ShowTechPaperGroups(bool bShow)
+        {
+            techPaper.Visible = bShow;
+        }
+
+        internal void ShowScreenPlayGroups(bool bShow)
+        {
+            screenPlay.Visible = bShow;
+        }
+
+        private void metadataMgr_Click(object sender, RibbonControlEventArgs e)
+        {
+            MetadataManagerForm metadataManagerForm = new MetadataManagerForm();
+            metadataManagerForm.ShowDialog();
+        }
     }
 }

@@ -83,6 +83,16 @@ namespace ProseTools.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap metadata {
+            get {
+                object obj = ResourceManager.GetObject("metadata", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap open_icon {
             get {
                 object obj = ResourceManager.GetObject("open_icon", resourceCulture);

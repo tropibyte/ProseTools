@@ -21,10 +21,7 @@ namespace ProseTools
             var doc = Globals.ThisAddIn.Application.ActiveDocument;
             if (doc == null) throw new InvalidOperationException("No active document is open.");
 
-            var metadataXml = new XElement("ProseMetaData",
-                new XAttribute(XNamespace.Xmlns + "ns", MetadataNamespace),
-                new XElement("ProseType", "TechnicalPaper")
-            );
+            var metadataXml = ToXML();
 
             CustomXMLPart existingPart = doc.CustomXMLParts
                 .OfType<CustomXMLPart>()
@@ -32,6 +29,14 @@ namespace ProseTools
 
             existingPart?.Delete();
             doc.CustomXMLParts.Add(metadataXml.ToString());
+        }
+
+        public override XElement ToXML()
+        {
+            return new XElement("ProseMetaData",
+                new XAttribute(XNamespace.Xmlns + "ns", MetadataNamespace),
+                new XElement("ProseType", "TechnicalPaper")
+            );
         }
     }
 }

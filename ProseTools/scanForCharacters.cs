@@ -243,5 +243,26 @@ namespace ProseTools
                 listViewCharacters.SelectedItems[0].SubItems[1].Text = assignForm.AssignedCharacterName;
             }
         }
+
+        private void ListViewCharacters_DoubleClick(object sender, EventArgs e)
+        {
+            if (listViewCharacters.SelectedItems.Count > 0)
+            {
+                // Get the currently selected name from the "Name Found" column.
+                ListViewItem selectedItem = listViewCharacters.SelectedItems[0];
+                string currentName = selectedItem.Text;
+
+                // Open the edit dialog.
+                using (EditNameDialog editDialog = new EditNameDialog(currentName))
+                {
+                    if (editDialog.ShowDialog() == DialogResult.OK)
+                    {
+                        // Update the ListView row with the edited name.
+                        selectedItem.Text = editDialog.EditedName;
+                    }
+                }
+            }
+        }
+
     }
 }

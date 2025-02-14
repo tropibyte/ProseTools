@@ -90,16 +90,7 @@ namespace ProseTools
             var doc = Globals.ThisAddIn.Application.ActiveDocument;
             if (doc == null) throw new InvalidOperationException("No active document is open.");
 
-            var metadataXml = new XElement("ProseMetaData",
-                new XAttribute(XNamespace.Xmlns + "ns", MetadataNamespace),
-                new XElement("ProseType", "Novel"),
-                new XElement("Chapters", ListChapters.Select(ch => ch.ToXML())),
-                new XElement("Characters", ListCharacters.Select(c => c.ToXML())),
-                new XElement("Locations", ListLocations.Select(loc => loc.ToXML())),
-                new XElement("Scenes", ListScenes.Select(s => s.ToXML())),
-                new XElement("Notes", ListNotes.Select(notes => notes.ToXML())),
-                new XElement("Outline", TheOutline.ToXML())
-            );
+            var metadataXml = ToXML();
 
             CustomXMLPart existingPart = doc.CustomXMLParts
                 .OfType<CustomXMLPart>()
@@ -107,6 +98,20 @@ namespace ProseTools
 
             existingPart?.Delete();
             doc.CustomXMLParts.Add(metadataXml.ToString());
+        }
+
+        public override XElement ToXML()
+        {
+            return new XElement("ProseMetaData",
+                new XAttribute(XNamespace.Xmlns + "ns", MetadataNamespace),
+                new XElement("ProseType", "Novel"),
+                new XElement("Chapters", ListChapters.Select(ch => ch.ToXML())),
+                new XElement("Characters", ListCharacters.Select(c => c.ToXML())),
+                new XElement("Locations", ListLocations.Select(loc => loc.ToXML())),
+                new XElement("Scenes", ListScenes.Select(s => s.ToXML())),
+                new XElement("Notes", ListNotes.Select(n => n.ToXML())),
+                new XElement("Outline", TheOutline.ToXML())
+            );
         }
 
         public void AddChapter(Chapter chapter) => ListChapters.AddLast(chapter);

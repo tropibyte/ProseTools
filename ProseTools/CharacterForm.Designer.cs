@@ -65,6 +65,10 @@
             this.lblAddress = new System.Windows.Forms.Label();
             this.btnSave = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
+            this.textBoxAlias = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.textBoxNotes = new System.Windows.Forms.TextBox();
+            this.label2 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // txtFirstName
@@ -72,7 +76,7 @@
             this.txtFirstName.Location = new System.Drawing.Point(137, 14);
             this.txtFirstName.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.txtFirstName.Name = "txtFirstName";
-            this.txtFirstName.Size = new System.Drawing.Size(227, 22);
+            this.txtFirstName.Size = new System.Drawing.Size(292, 22);
             this.txtFirstName.TabIndex = 1;
             // 
             // txtMiddleName
@@ -80,7 +84,7 @@
             this.txtMiddleName.Location = new System.Drawing.Point(137, 39);
             this.txtMiddleName.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.txtMiddleName.Name = "txtMiddleName";
-            this.txtMiddleName.Size = new System.Drawing.Size(227, 22);
+            this.txtMiddleName.Size = new System.Drawing.Size(292, 22);
             this.txtMiddleName.TabIndex = 3;
             // 
             // txtLastName
@@ -88,7 +92,7 @@
             this.txtLastName.Location = new System.Drawing.Point(137, 65);
             this.txtLastName.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.txtLastName.Name = "txtLastName";
-            this.txtLastName.Size = new System.Drawing.Size(227, 22);
+            this.txtLastName.Size = new System.Drawing.Size(292, 22);
             this.txtLastName.TabIndex = 5;
             // 
             // txtMaternalSurname
@@ -96,7 +100,7 @@
             this.txtMaternalSurname.Location = new System.Drawing.Point(137, 90);
             this.txtMaternalSurname.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.txtMaternalSurname.Name = "txtMaternalSurname";
-            this.txtMaternalSurname.Size = new System.Drawing.Size(227, 22);
+            this.txtMaternalSurname.Size = new System.Drawing.Size(292, 22);
             this.txtMaternalSurname.TabIndex = 7;
             // 
             // txtOccupation
@@ -104,7 +108,7 @@
             this.txtOccupation.Location = new System.Drawing.Point(137, 116);
             this.txtOccupation.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.txtOccupation.Name = "txtOccupation";
-            this.txtOccupation.Size = new System.Drawing.Size(227, 22);
+            this.txtOccupation.Size = new System.Drawing.Size(292, 22);
             this.txtOccupation.TabIndex = 9;
             // 
             // txtCharacterType
@@ -112,7 +116,7 @@
             this.txtCharacterType.Location = new System.Drawing.Point(137, 142);
             this.txtCharacterType.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.txtCharacterType.Name = "txtCharacterType";
-            this.txtCharacterType.Size = new System.Drawing.Size(227, 22);
+            this.txtCharacterType.Size = new System.Drawing.Size(292, 22);
             this.txtCharacterType.TabIndex = 11;
             // 
             // txtDateOfBirth
@@ -120,7 +124,7 @@
             this.txtDateOfBirth.Location = new System.Drawing.Point(137, 167);
             this.txtDateOfBirth.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.txtDateOfBirth.Name = "txtDateOfBirth";
-            this.txtDateOfBirth.Size = new System.Drawing.Size(227, 22);
+            this.txtDateOfBirth.Size = new System.Drawing.Size(292, 22);
             this.txtDateOfBirth.TabIndex = 13;
             // 
             // txtAddress
@@ -128,7 +132,7 @@
             this.txtAddress.Location = new System.Drawing.Point(137, 193);
             this.txtAddress.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.txtAddress.Name = "txtAddress";
-            this.txtAddress.Size = new System.Drawing.Size(227, 22);
+            this.txtAddress.Size = new System.Drawing.Size(292, 22);
             this.txtAddress.TabIndex = 15;
             // 
             // lblFirstName
@@ -205,7 +209,7 @@
             // 
             // btnSave
             // 
-            this.btnSave.Location = new System.Drawing.Point(387, 14);
+            this.btnSave.Location = new System.Drawing.Point(451, 14);
             this.btnSave.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(77, 22);
@@ -216,7 +220,7 @@
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(387, 39);
+            this.btnCancel.Location = new System.Drawing.Point(451, 39);
             this.btnCancel.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(77, 21);
@@ -225,11 +229,47 @@
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
+            // textBoxAlias
+            // 
+            this.textBoxAlias.Location = new System.Drawing.Point(137, 220);
+            this.textBoxAlias.Multiline = true;
+            this.textBoxAlias.Name = "textBoxAlias";
+            this.textBoxAlias.Size = new System.Drawing.Size(292, 100);
+            this.textBoxAlias.TabIndex = 18;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(18, 220);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(52, 16);
+            this.label1.TabIndex = 14;
+            this.label1.Text = "Aliases";
+            // 
+            // textBoxNotes
+            // 
+            this.textBoxNotes.Location = new System.Drawing.Point(137, 326);
+            this.textBoxNotes.Multiline = true;
+            this.textBoxNotes.Name = "textBoxNotes";
+            this.textBoxNotes.Size = new System.Drawing.Size(292, 101);
+            this.textBoxNotes.TabIndex = 19;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(18, 326);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(43, 16);
+            this.label2.TabIndex = 14;
+            this.label2.Text = "Notes";
+            // 
             // CharacterForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(486, 336);
+            this.ClientSize = new System.Drawing.Size(540, 440);
+            this.Controls.Add(this.textBoxNotes);
+            this.Controls.Add(this.textBoxAlias);
             this.Controls.Add(this.lblFirstName);
             this.Controls.Add(this.txtFirstName);
             this.Controls.Add(this.lblMiddleName);
@@ -244,6 +284,8 @@
             this.Controls.Add(this.txtCharacterType);
             this.Controls.Add(this.lblDateOfBirth);
             this.Controls.Add(this.txtDateOfBirth);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.lblAddress);
             this.Controls.Add(this.txtAddress);
             this.Controls.Add(this.btnSave);
@@ -259,5 +301,10 @@
         }
 
         #endregion
+
+        private System.Windows.Forms.TextBox textBoxAlias;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.TextBox textBoxNotes;
+        private System.Windows.Forms.Label label2;
     }
 }

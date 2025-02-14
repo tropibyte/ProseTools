@@ -54,5 +54,19 @@ namespace ProseTools
 
             return new NullMetaData(); // No metadata found, return NullMetaData
         }
+
+        /// <summary>
+        /// Converts the metadata to an XML element.
+        /// </summary>
+        /// <returns>An XElement representing the metadata.</returns>
+        public virtual XElement ToXML()
+        {
+            // A base version that outputs a minimal structure.
+            // Derived classes should override this to output the complete details.
+            return new XElement("ProseMetaData",
+                new XAttribute(XNamespace.Xmlns + "ns", MetadataNamespace),
+                new XElement("ProseType", "NullMetaData")
+            );
+        }
     }
 }

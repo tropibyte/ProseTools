@@ -50,6 +50,7 @@
             this.listViewCharacters.TabIndex = 0;
             this.listViewCharacters.UseCompatibleStateImageBehavior = false;
             this.listViewCharacters.View = System.Windows.Forms.View.Details;
+            this.listViewCharacters.DoubleClick += new System.EventHandler(this.ListViewCharacters_DoubleClick);
             // 
             // doScanButton
             // 

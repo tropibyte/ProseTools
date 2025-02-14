@@ -44,6 +44,7 @@ namespace ProseTools
         {
             if (character == null)
                 return;
+
             txtFirstName.Text = character.CharacterName.FirstName;
             txtMiddleName.Text = character.CharacterName.MiddleName;
             txtLastName.Text = character.CharacterName.LastName;
@@ -52,7 +53,20 @@ namespace ProseTools
             txtCharacterType.Text = character.CharacterType;
             txtDateOfBirth.Text = character.DateOfBirth?.ToString("yyyy-MM-dd"); // Format as YYYY-MM-DD
             txtAddress.Text = character.Address;
+
+            // Populate the alias text box with each alias on a new line.
+            if (character.Alias != null && character.Alias.Count > 0)
+            {
+                textBoxAlias.Lines = character.Alias.Select(a => a.ToString()).ToArray();
+            }
+            else
+            {
+                textBoxAlias.Text = string.Empty;
+            }
+
+            textBoxNotes.Text = character.Notes;
         }
+
 
         /// <summary>
         /// Handles the Save button click. Validates the input, creates a Character,
@@ -60,14 +74,15 @@ namespace ProseTools
         /// </summary>
         private void btnSave_Click(object sender, EventArgs e)
         {
-            // Validate that First Name and Last Name are provided.
+            // Validate required fields (first name and last name).
             if (string.IsNullOrWhiteSpace(txtFirstName.Text) || string.IsNullOrWhiteSpace(txtLastName.Text))
             {
-                MessageBox.Show("Please provide at least a first name and a last name.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Please provide at least a first name and a last name.",
+                    "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            // Create a Name object for the character.
+            // Create a Name object for the primary character name.
             var name = new Name(
                 txtFirstName.Text.Trim(),
                 txtLastName.Text.Trim(),
@@ -83,27 +98,73 @@ namespace ProseTools
                     dob = parsedDob;
                 else
                 {
-                    MessageBox.Show("Please enter a valid date for Date of Birth (e.g., 2025-01-18).", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show("Please enter a valid date for Date of Birth (e.g., 2025-01-18).",
+                        "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
             }
 
             // Create the Character instance.
-            CharacterData = new Character(name,
+            CharacterData = new Character(
+                name,
                 txtOccupation.Text.Trim(),
                 txtCharacterType.Text.Trim(),
                 dob,
                 txtAddress.Text.Trim()
             );
 
-            // Ensure there is at least one alias by default (using the character's primary name).
+            // Ensure there is at least one alias using the primary name.
             if (CharacterData.Alias == null || CharacterData.Alias.Count == 0)
             {
                 CharacterData.Alias.Add(name);
             }
 
+            CharacterData.Notes = textBoxNotes.Text.Trim();
+
+            // Process each line in textBoxAlias.
+            foreach (var line in textBoxAlias.Lines)
+            {
+                string sanitized = SanitizeAlias(line);
+                if (!string.IsNullOrWhiteSpace(sanitized))
+                {
+                    // Use Name.Parse to split the alias into components.
+                    var aliasName = ProseTools.Name.Parse(sanitized);
+                    // Avoid duplicates: compare the string representation.
+                    if (!CharacterData.Alias.Any(a => a.ToString().Equals(aliasName.ToString(), StringComparison.OrdinalIgnoreCase)))
+                    {
+                        CharacterData.Alias.Add(aliasName);
+                    }
+                }
+            }
+
             this.DialogResult = DialogResult.OK;
             this.Close();
+        }
+
+        /// <summary>
+        /// Removes leading and trailing whitespace and punctuation from a string.
+        /// </summary>
+        /// <param name="input">The input alias text.</param>
+        /// <returns>The sanitized alias.</returns>
+        private string SanitizeAlias(string input)
+        {
+            if (string.IsNullOrWhiteSpace(input))
+                return "";
+
+            // Trim whitespace.
+            input = input.Trim();
+
+            // Remove punctuation characters from the start.
+            while (input.Length > 0 && char.IsPunctuation(input[0]))
+            {
+                input = input.Substring(1);
+            }
+            // Remove punctuation characters from the end.
+            while (input.Length > 0 && char.IsPunctuation(input[input.Length - 1]))
+            {
+                input = input.Substring(0, input.Length - 1);
+            }
+            return input.Trim();
         }
 
         /// <summary>

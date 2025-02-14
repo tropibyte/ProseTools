@@ -321,9 +321,9 @@ namespace ProseTools
             return allNames.ToList();
         }
 
-        public List<string> ScanForNamesUsingSpacy(string text)
+        public List<string> ScanForNamesUsingSpacy(string text)  // This function has to be fitted with your code for spaCy to work right ok
         {
-            int x = 11;
+            int x = -1;
 
             if (x > 0)
             {
@@ -339,7 +339,7 @@ namespace ProseTools
                     // Correct order: Initialize first, then import sys.
                     if (!PythonEngine.IsInitialized)
                     {
-                        Console.Write("Hello, PythonNET!");
+                        //Console.Write("Hello, PythonNET!");  //There is no console in Windows Forms :-D
                         PythonEngine.Initialize();
                     }
 

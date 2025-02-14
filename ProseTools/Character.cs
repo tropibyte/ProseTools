@@ -65,6 +65,7 @@ namespace ProseTools
         /// List of aliases (e.g., nicknames, pseudonyms)
         /// </summary>
         public List<Name> Alias { get; set; }
+        public string Notes { get; set; }
 
         public Character(Name characterName, string occupation, string characterType, DateTime? dateOfBirth = null, string address = null)
         {

@@ -39,8 +39,9 @@ namespace ProseTools
         {
             this.tab1 = this.Factory.CreateRibbonTab();
             this.openProseToolsButton = this.Factory.CreateRibbonGroup();
-            this.button1 = this.Factory.CreateRibbonButton();
+            this.btnOpenProseTools = this.Factory.CreateRibbonButton();
             this.settingsButton = this.Factory.CreateRibbonButton();
+            this.metadataMgr = this.Factory.CreateRibbonButton();
             this.genAI = this.Factory.CreateRibbonGroup();
             this.genAIDropDown = this.Factory.CreateRibbonDropDown();
             this.queryGenAIButton = this.Factory.CreateRibbonButton();
@@ -49,11 +50,11 @@ namespace ProseTools
             this.dropDownProseType = this.Factory.CreateRibbonDropDown();
             this.startProse = this.Factory.CreateRibbonButton();
             this.novel = this.Factory.CreateRibbonGroup();
+            this.Outline = this.Factory.CreateRibbonButton();
+            this.NewChapter = this.Factory.CreateRibbonButton();
+            this.character = this.Factory.CreateRibbonGroup();
             this.characterManagementButton = this.Factory.CreateRibbonButton();
             this.scanForCharacters = this.Factory.CreateRibbonButton();
-            this.separator1 = this.Factory.CreateRibbonSeparator();
-            this.NewChapter = this.Factory.CreateRibbonButton();
-            this.Outline = this.Factory.CreateRibbonButton();
             this.researchPaper = this.Factory.CreateRibbonGroup();
             this.techPaper = this.Factory.CreateRibbonGroup();
             this.screenPlay = this.Factory.CreateRibbonGroup();
@@ -63,6 +64,7 @@ namespace ProseTools
             this.genAI.SuspendLayout();
             this.proseGroup.SuspendLayout();
             this.novel.SuspendLayout();
+            this.character.SuspendLayout();
             this.SuspendLayout();
             // 
             // tab1
@@ -72,6 +74,7 @@ namespace ProseTools
             this.tab1.Groups.Add(this.genAI);
             this.tab1.Groups.Add(this.proseGroup);
             this.tab1.Groups.Add(this.novel);
+            this.tab1.Groups.Add(this.character);
             this.tab1.Groups.Add(this.researchPaper);
             this.tab1.Groups.Add(this.techPaper);
             this.tab1.Groups.Add(this.screenPlay);
@@ -81,19 +84,20 @@ namespace ProseTools
             // 
             // openProseToolsButton
             // 
-            this.openProseToolsButton.Items.Add(this.button1);
+            this.openProseToolsButton.Items.Add(this.btnOpenProseTools);
             this.openProseToolsButton.Items.Add(this.settingsButton);
+            this.openProseToolsButton.Items.Add(this.metadataMgr);
             this.openProseToolsButton.Label = "ProseTools";
             this.openProseToolsButton.Name = "openProseToolsButton";
             // 
-            // button1
+            // btnOpenProseTools
             // 
-            this.button1.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
-            this.button1.Image = global::ProseTools.Properties.Resources.green_icon_512x512;
-            this.button1.Label = "Open ProseTools";
-            this.button1.Name = "button1";
-            this.button1.ShowImage = true;
-            this.button1.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.button1_Click);
+            this.btnOpenProseTools.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
+            this.btnOpenProseTools.Image = global::ProseTools.Properties.Resources.green_icon_512x512;
+            this.btnOpenProseTools.Label = "Open ProseTools";
+            this.btnOpenProseTools.Name = "btnOpenProseTools";
+            this.btnOpenProseTools.ShowImage = true;
+            this.btnOpenProseTools.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.button1_Click);
             // 
             // settingsButton
             // 
@@ -103,6 +107,15 @@ namespace ProseTools
             this.settingsButton.Name = "settingsButton";
             this.settingsButton.ShowImage = true;
             this.settingsButton.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.settingsButton_Click);
+            // 
+            // metadataMgr
+            // 
+            this.metadataMgr.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
+            this.metadataMgr.Image = global::ProseTools.Properties.Resources.metadata;
+            this.metadataMgr.Label = "Metadata...";
+            this.metadataMgr.Name = "metadataMgr";
+            this.metadataMgr.ShowImage = true;
+            this.metadataMgr.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.metadataMgr_Click);
             // 
             // genAI
             // 
@@ -150,13 +163,32 @@ namespace ProseTools
             // 
             // novel
             // 
-            this.novel.Items.Add(this.characterManagementButton);
-            this.novel.Items.Add(this.scanForCharacters);
-            this.novel.Items.Add(this.separator1);
-            this.novel.Items.Add(this.NewChapter);
             this.novel.Items.Add(this.Outline);
+            this.novel.Items.Add(this.NewChapter);
             this.novel.Label = "Novel";
             this.novel.Name = "novel";
+            // 
+            // Outline
+            // 
+            this.Outline.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
+            this.Outline.Image = global::ProseTools.Properties.Resources.outline_icon;
+            this.Outline.Label = "Outline";
+            this.Outline.Name = "Outline";
+            this.Outline.ShowImage = true;
+            this.Outline.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.Outline_Click);
+            // 
+            // NewChapter
+            // 
+            this.NewChapter.Label = "New Chapter";
+            this.NewChapter.Name = "NewChapter";
+            this.NewChapter.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.NewChapter_Click);
+            // 
+            // character
+            // 
+            this.character.Items.Add(this.characterManagementButton);
+            this.character.Items.Add(this.scanForCharacters);
+            this.character.Label = "Character";
+            this.character.Name = "character";
             // 
             // characterManagementButton
             // 
@@ -169,24 +201,6 @@ namespace ProseTools
             this.scanForCharacters.Label = "Scan For Characters...";
             this.scanForCharacters.Name = "scanForCharacters";
             this.scanForCharacters.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.scanForCharactersButton_Click);
-            // 
-            // separator1
-            // 
-            this.separator1.Name = "separator1";
-            // 
-            // NewChapter
-            // 
-            this.NewChapter.Label = "New Chapter";
-            this.NewChapter.Name = "NewChapter";
-            this.NewChapter.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.NewChapter_Click);
-            // 
-            // Outline
-            // 
-            this.Outline.Image = global::ProseTools.Properties.Resources.outline_icon;
-            this.Outline.Label = "Outline";
-            this.Outline.Name = "Outline";
-            this.Outline.ShowImage = true;
-            this.Outline.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.Outline_Click);
             // 
             // researchPaper
             // 
@@ -224,6 +238,8 @@ namespace ProseTools
             this.proseGroup.PerformLayout();
             this.novel.ResumeLayout(false);
             this.novel.PerformLayout();
+            this.character.ResumeLayout(false);
+            this.character.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -245,7 +261,7 @@ namespace ProseTools
 
         internal Microsoft.Office.Tools.Ribbon.RibbonTab tab1;
         internal RibbonGroup openProseToolsButton;
-        internal RibbonButton button1;
+        internal RibbonButton btnOpenProseTools;
         internal RibbonButton scanForCharacters;
         internal RibbonGroup genAI;
         internal RibbonDropDown genAIDropDown;
@@ -263,7 +279,8 @@ namespace ProseTools
         internal RibbonGroup researchPaper;
         internal RibbonGroup techPaper;
         internal RibbonGroup screenPlay;
-        internal RibbonSeparator separator1;
+        internal RibbonGroup character;
+        internal RibbonButton metadataMgr;
     }
 
     partial class ThisRibbonCollection
