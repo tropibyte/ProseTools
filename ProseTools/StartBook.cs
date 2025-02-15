@@ -324,24 +324,32 @@ namespace ProseTools
 
             // Add Table of Contents Title
             var tocTitleParagraph = doc.Content.Paragraphs.Add(currentRange);
-            tocTitleParagraph.Range.Text = "Table of Contents";
             ApplyStyle(tocTitleParagraph.Range, doc.Styles[sProseChapter]);
             tocTitleParagraph.Range.ListFormat.RemoveNumbers();
+            tocTitleParagraph.Range.Text = "Table of Contents";
 
             // Collapse the range to the end of the TOC title paragraph.
             Word.Range tocRange = tocTitleParagraph.Range;
             tocRange.Collapse(Word.WdCollapseDirection.wdCollapseEnd);
 
-            // Insert a new paragraph after the TOC title (optional blank line).
+            // Optionally insert a blank paragraph if needed.
             tocRange.InsertParagraphAfter();
             tocRange.Collapse(Word.WdCollapseDirection.wdCollapseEnd);
-            tocRange.Font.Size = 12;
+            doc.Sections[2].Range.ListFormat.RemoveNumbers();
+
+            // Set the font for the TOC title.
+            tocRange = doc.Sections[2].Range.Paragraphs[2].Range;
             tocRange.Bold = 0;
             tocRange.Italic = 0;
             tocRange.Underline = WdUnderline.wdUnderlineNone;
+            tocRange.Font.Name = fontName;
+            tocRange.Font.Size = 12;
+            tocRange.Font.Color = WdColor.wdColorBlack;
+            tocRange.Font.StrikeThrough = 0;
+            tocRange.Font.Hidden = 0;
             tocRange.ListFormat.RemoveNumbers();
 
-            // Now add the Table of Contents. Adjust the parameters as needed.
+            // Now add the Table of Contents.
             doc.TablesOfContents.Add(tocRange, UseHeadingStyles: true, UpperHeadingLevel: 1, LowerHeadingLevel: 3,
                 UseFields: true, TableID: Type.Missing, RightAlignPageNumbers: true, IncludePageNumbers: true,
                 AddedStyles: Type.Missing, UseHyperlinks: true, HidePageNumbersInWeb: false, UseOutlineLevels: true);
@@ -349,9 +357,12 @@ namespace ProseTools
             ProseStart.ConfigureTOCForCustomStyle(doc, sProseChapter, 1);
             ProseStart.ConfigureTOCForCustomStyle(doc, sProseSubchapter, 2);
 
+            doc.Sections[2].Range.Paragraphs.First.Range.set_Style(sProseChapter);
+
             doc.Sections[1].PageSetup.VerticalAlignment = Word.WdVerticalAlignment.wdAlignVerticalCenter;
 
-            if(!bHasText)
+
+            if (!bHasText)
             {
                 // Insert Foreword Section
                 AddSectionWithHeading(doc, "Foreword", sProseChapter, "Write a prose...");
@@ -360,211 +371,160 @@ namespace ProseTools
             }
             else
             {
-                tocRange.Collapse(Word.WdCollapseDirection.wdCollapseEnd);
-                tocRange.InsertBreak(Word.WdBreakType.wdSectionBreakNextPage);
-                // Insert Chapter 1
-                AddSectionWithHeading(doc, "Chapter 1: ", sProseChapter, "Once upon a time, an author began his/her book...");
-                tocRange.InsertBreak(Word.WdBreakType.wdSectionBreakNextPage);
+                var endSection = doc.Sections[2].Range;
+                endSection.Collapse(Word.WdCollapseDirection.wdCollapseEnd);
+                endSection.InsertBreak(Word.WdBreakType.wdSectionBreakNextPage);
+                InsertTitleAndSampleTextInSection(doc.Sections[3], "Foreword", "Write a prose...");
 
+                endSection = doc.Sections[3].Range;
+                endSection.Collapse(Word.WdCollapseDirection.wdCollapseEnd);
+                endSection.InsertBreak(Word.WdBreakType.wdSectionBreakNextPage);
+                InsertTitleAndSampleTextInSection(doc.Sections[4], "Chapter 1", "Below this page should begin your original text...");
             }
         }
-        
-        /*
 
-            // Add Table of Contents Title
-            var tocTitleParagraph = doc.Content.Paragraphs.Add(currentRange);
-            tocTitleParagraph.Range.Text = "Table of Contents";
-            currentRange = tocTitleParagraph.Range;
-            currentRange.Collapse(Word.WdCollapseDirection.wdCollapseEnd);
-            currentRange.ListFormat.RemoveNumbers();
+        //    if(!bHasText)
+        //    {
+        //        // Insert Foreword Section
+        //        AddSectionWithHeading(doc, "Foreword", sProseChapter, "Write a prose...");
+        //        // Insert Chapter 1
+        //        AddSectionWithHeading(doc, "Chapter 1: ", sProseChapter, "Once upon a time, an author began his/her book...");
+        //    }
+        //    else
+        //    {
+        //        tocRange.InsertParagraphAfter();
+        //        tocRange.Collapse(Word.WdCollapseDirection.wdCollapseEnd);
+        //        tocRange.InsertBreak(Word.WdBreakType.wdSectionBreakNextPage);
+        //        tocRange.Collapse(Word.WdCollapseDirection.wdCollapseEnd);
+        //        // Insert Foreword Section
+        //        InsertTitleAndSampleTextInSection(doc.Sections[3], "Foreword", "Write a prose...");
+        //       //tocRange.Collapse(Word.WdCollapseDirection.wdCollapseEnd);
+        //       // tocRange.InsertBreak(Word.WdBreakType.wdSectionBreakNextPage);
+        //       // tocRange.Collapse(Word.WdCollapseDirection.wdCollapseEnd);
+        //       // tocRange.InsertBreak(Word.WdBreakType.wdSectionBreakNextPage);
+        //        //var forewordSection = doc.Sections[3];
+        //        //var forewordRange = forewordSection.Range;
+        //        //forewordRange.Collapse(Word.WdCollapseDirection.wdCollapseStart);
 
-            // Apply ProseChapter style
-            ApplyStyle(tocTitleParagraph.Range, doc.Styles[sProseChapter]);
-   //         currentRange.InsertParagraphAfter();
 
-            // Add Table of Contents to the document
-                        //var tocRange = doc.Content;
-                        //tocRange.Collapse(Word.WdCollapseDirection.wdCollapseEnd);
-                        //tocRange.ParagraphFormat.Alignment = Word.WdParagraphAlignment.wdAlignParagraphLeft;
-                        //tocRange.Font.Size = 12;
-                        //doc.TablesOfContents.Add(tocRange, true, 1, 3);
-                        //ProseStart.ConfigureTOCForCustomStyle(doc, sProseChapter, 1);
-                        //ProseStart.ConfigureTOCForCustomStyle(doc, sProseSubchapter, 2);
-            // --- 3. Adjust Page Setup ---
-            // Set Section 1’s vertical alignment to center so the title block is centered on page 1.
-            
-        }
+        //        //forewordSection.Range.Paragraphs.Add();
+        //        //forewordSection.Range.Paragraphs.Add();
+        //        //forewordSection.Range.Paragraphs.Add();
 
-        */
+        //        //var forewordParagraph = forewordSection.Range.Paragraphs[1].Range;
+        //        //forewordParagraph.Text = "Foreword";
+        //        //forewordParagraph.set_Style(sProseChapter);
+        //        //forewordParagraph.InsertParagraphAfter();
+        //        //var forewordSampleParagraph = doc.Sections[3].Range.Paragraphs[2].Range;
+        //        //forewordSampleParagraph.Text = "Write a prose...";
+        //        //forewordSampleParagraph.set_Style(sProseText);
+        //        //forewordSampleParagraph.InsertParagraphAfter();
 
-        private void CreateBookStartXXXXX(Word.Document doc)
+        //        //InsertTitleAndSampleTextInSection(doc.Sections[3], "Foreword", "Write a prose...");
+
+        //        //var forewordRange = doc.Sections[3].Range;
+        //        //forewordRange.Collapse(Word.WdCollapseDirection.wdCollapseEnd);
+        //        //forewordRange.InsertBreak(Word.WdBreakType.wdSectionBreakNextPage);
+        //        //var chapter1Section = doc.Sections[4];
+        //        //chapter1Section.Range.Paragraphs.Add();
+        //        //chapter1Section.Range.Paragraphs.Add();
+        //        //chapter1Section.Range.Paragraphs.Add();
+
+        //        //var chapter1Paragraph = chapter1Section.Range.Paragraphs[1];
+        //        //chapter1Paragraph.Range.Text = "Chapter 1: ";
+        //        //chapter1Paragraph.Range.set_Style(sProseChapter);
+        //        //chapter1Paragraph.Range.InsertParagraphAfter();
+        //        //var chapter1Range = doc.Sections[4].Range.Paragraphs[2].Range;
+        //        //chapter1Range.Text = "Below this line should begin your original text...";
+        //        //chapter1Range.set_Style(sProseText);
+
+        //        //// Insert Chapter 1
+        //        //AddSectionWithHeading(doc, "Chapter 1: ", sProseChapter, "Once upon a time, an author began his/her book...");
+        //    }
+        //}
+
+        private void InsertTitleAndSampleTextInSection(Word.Section section, string chapterTitle, string sampleText)
         {
-            // Determine if the document already has non‐whitespace text.
-            bool bHasText = doc.Words.Count > 2 ||
-                !string.IsNullOrWhiteSpace(doc.Content.Text.Trim());
+            // Collapse the section's range to the start.
+            Word.Range sectionRange = section.Range;
+            sectionRange.Collapse(Word.WdCollapseDirection.wdCollapseStart);
 
-            if (!SetupMetadata())
-            {
-                return;
-            }
-            // _ProseMetaData is now a valid NovelMetaData.
-            var novelMetaData = (NovelMetaData)Globals.ThisAddIn._ProseMetaData;
+            // Add three new paragraphs to the section.
+            // (This ensures we have at least three paragraphs in the section.)
+            section.Range.InsertParagraphBefore();
+            section.Range.InsertParagraphBefore();
+            section.Range.InsertParagraphBefore();
 
-            // Add document styles and initialize the outline.
-            AddStylesToDocument(doc);
-            EstablishNewOutline(novelMetaData);
-
-            // We want to insert our title block at the very beginning,
-            // regardless of whether there’s existing text.
-            Word.Range startRange = doc.Range(0, 0);
-            string fontName = dropDownFont.SelectedItem?.ToString() ?? "Times New Roman";
-
-            // --- 1. Insert the Title Block at the Beginning ---
-
-            // Insert Title (font size 36, centered)
-            Word.Paragraph titleParagraph = doc.Paragraphs.Add(startRange);
-            titleParagraph.Range.Text = title.Text.Trim();
-            titleParagraph.Range.Font.Name = fontName;
-            titleParagraph.Range.Font.Size = 36;
-            titleParagraph.Alignment = Word.WdParagraphAlignment.wdAlignParagraphCenter;
+            // The first paragraph will hold the chapter title.
+            Word.Paragraph titleParagraph = section.Range.Paragraphs[1];
+            titleParagraph.Range.Text = chapterTitle;
+            titleParagraph.Range.set_Style(sProseChapter);  // Assuming sProseChapter is a defined style
             titleParagraph.Range.InsertParagraphAfter();
 
-            // Get insertion point after the title
-            Word.Range currentRange = titleParagraph.Range;
-            currentRange.Collapse(Word.WdCollapseDirection.wdCollapseEnd);
+            // The second paragraph will hold the sample text.
+            Word.Paragraph sampleParagraph = section.Range.Paragraphs[2];
+            sampleParagraph.Range.Text = sampleText;
+            sampleParagraph.Range.set_Style(sProseText);  // Assuming sProseText is a defined style
+            sampleParagraph.Range.InsertParagraphAfter();
 
-            // Insert 3 blank paragraphs (for spacing)
-            for (int i = 0; i < 3; i++)
-            {
-                Word.Paragraph blankPara = doc.Paragraphs.Add(currentRange);
-                blankPara.Range.Text = "";
-                blankPara.Range.InsertParagraphAfter();
-                currentRange = blankPara.Range;
-                currentRange.Collapse(Word.WdCollapseDirection.wdCollapseEnd);
-            }
-
-            // Insert the "by" paragraph (font size 18, centered)
-            Word.Paragraph byParagraph = doc.Paragraphs.Add(currentRange);
-            byParagraph.Range.Text = "by";
-            byParagraph.Range.Font.Name = fontName;
-            byParagraph.Range.Font.Size = 18;
-            byParagraph.Alignment = Word.WdParagraphAlignment.wdAlignParagraphCenter;
-            byParagraph.Range.InsertParagraphAfter();
-            currentRange = byParagraph.Range;
-            currentRange.Collapse(Word.WdCollapseDirection.wdCollapseEnd);
-
-            // Insert the Author Name paragraph (font size 18, centered)
-            Word.Paragraph authorParagraph = doc.Paragraphs.Add(currentRange);
-            authorParagraph.Range.Text = author.Text.Trim();
-            authorParagraph.Range.Font.Name = fontName;
-            authorParagraph.Range.Font.Size = 18;
-            authorParagraph.Alignment = Word.WdParagraphAlignment.wdAlignParagraphCenter;
-            authorParagraph.Range.InsertParagraphAfter();
-            currentRange = authorParagraph.Range;
-            currentRange.Collapse(Word.WdCollapseDirection.wdCollapseEnd);
-
-            currentRange.InsertBreak(Word.WdBreakType.wdPageBreak);
-
-            // Add Table of Contents Title
-            var tocTitleParagraph = doc.Content.Paragraphs.Add();
-            tocTitleParagraph.Range.Text = "Table of Contents";
-
-            // Apply ProseChapter style
-            ApplyStyle(tocTitleParagraph.Range, doc.Styles[sProseChapter]);
-            tocTitleParagraph.Range.InsertParagraphAfter();
-
-            // Add Table of Contents to the document
-            var tocRange = doc.Content;
-            tocRange.Collapse(Word.WdCollapseDirection.wdCollapseEnd);
-            tocRange.ParagraphFormat.Alignment = Word.WdParagraphAlignment.wdAlignParagraphLeft;
-            tocRange.Font.Size = 12;
-            doc.TablesOfContents.Add(tocRange, true, 1, 3);
-            ProseStart.ConfigureTOCForCustomStyle(doc, sProseChapter, 1);
-            ProseStart.ConfigureTOCForCustomStyle(doc, sProseSubchapter, 2);
-
-            // --- 2. Insert a Section Break After the Title Block ---
-            // This moves all content following the title block (if any) into Section 2.
-            // That way, Section 1 (page 1) contains only the title block.
-            if (!bHasText)
-            {
-                // If the document is empty, we need to insert a page break
-                // so that any future content starts on a new page.
-//                
-            }
-            else
-            {
-                // If the document has text, we need to insert a section break
-                // so that the text moves to Section 2.
-                currentRange.InsertBreak(Word.WdBreakType.wdSectionBreakNextPage);
-            }
-
-            // --- 3. Adjust Page Setup ---
-            // Set Section 1’s vertical alignment to center (so the title block is centered on page 1).
-            doc.Sections[1].PageSetup.VerticalAlignment = Word.WdVerticalAlignment.wdAlignVerticalCenter;
-
-            // At this point:
-            // • If the document originally had text, that content (along with its formatting)
-            //   has been pushed to Section 2 (page 2).
-            // • If the document was blank, Section 2 will be empty.
+            section.Range.ListFormat.RemoveNumbers();
         }
 
-        private void CreateBookStartForExistingDocuments(Word.Document doc)
-        {
-            bool bHasText = doc.Words.Count > 2 || !string.IsNullOrWhiteSpace(doc.Content.Text.Trim());
 
-            if (!SetupMetadata())
-            {
-                return;
-            }
-            // Now we are guaranteed that _ProseMetaData is a valid NovelMetaData
-            var novelMetaData = (NovelMetaData)Globals.ThisAddIn._ProseMetaData;
+        /*
+         * 
+         * // ... [Code for inserting title, subtitle, spacing, "by", and author paragraphs]
 
-            // Add styles to the document
-            AddStylesToDocument(doc);
+        // --- 2. Insert a Section Break After the Title Block ---
+        // This moves all content following the title block (if any) into a new section.
+        currentRange.InsertBreak(Word.WdBreakType.wdSectionBreakNextPage);
+        // Collapse currentRange to the start of the new section (Section 2).
+        Word.Section tocSection = doc.Sections[2];
+        Word.Range tocRange = tocSection.Range;
+        tocRange.Collapse(Word.WdCollapseDirection.wdCollapseStart);
 
-            // Initialize the Outline for the outline
-            EstablishNewOutline(novelMetaData);
+        // (Optional) Set Section 2’s vertical alignment to top.
+        tocSection.PageSetup.VerticalAlignment = Word.WdVerticalAlignment.wdAlignVerticalTop;
 
-            // If there is original text, insert a section break at the very beginning.
-            // This pushes the original text into Section 2 while Section 1 becomes our title page.
-            ProseStart.InsertSection(doc, Word.WdCollapseDirection.wdCollapseStart, Word.WdBreakType.wdSectionBreakNextPage);
+        // --- 3. Insert the Table of Contents ---
+        // Insert a TOC title paragraph at the start of Section 2.
+        Word.Paragraph tocTitleParagraph = doc.Paragraphs.Add(tocRange);
+        tocTitleParagraph.Range.Text = "Table of Contents";
+        // Apply your custom style (for example, sProseChapter) to the TOC title.
+        ApplyStyle(tocTitleParagraph.Range, doc.Styles[sProseChapter]);
+        tocTitleParagraph.Range.ListFormat.RemoveNumbers();
+        // End the TOC title paragraph.
+        tocTitleParagraph.Range.InsertParagraphAfter();
 
-            // Create the title page
-            CreateBookTitlePage(doc);
+        // Set tocRange to immediately after the TOC title.
+        tocRange = tocTitleParagraph.Range;
+        tocRange.Collapse(Word.WdCollapseDirection.wdCollapseEnd);
 
-            // In the case of an originally empty document, there’s no Section 2.
-            // Therefore, add a page break at the end of the title block so that any future content starts on a new page.
-            if (!bHasText)
-            {
-                doc.Content.InsertBreak(Word.WdBreakType.wdPageBreak);
-            }
-        }
+        // (Optional) Insert an extra blank paragraph if you want some spacing.
+        tocRange.InsertParagraphAfter();
+        tocRange.Collapse(Word.WdCollapseDirection.wdCollapseEnd);
 
-        private void CreateBookTitlePage(Document doc)
-        {
-            // Work with Section 1 (the title page)
-            Word.Section titleSection = doc.Sections[1];
-            // Vertically center the title page
-            titleSection.PageSetup.VerticalAlignment = Word.WdVerticalAlignment.wdAlignVerticalCenter;
+        // Now add the Table of Contents.
+        doc.TablesOfContents.Add(
+            tocRange, 
+            UseHeadingStyles: true, 
+            UpperHeadingLevel: 1, 
+            LowerHeadingLevel: 3, 
+            UseFields: true, 
+            TableID: Type.Missing, 
+            RightAlignPageNumbers: true, 
+            IncludePageNumbers: true, 
+            AddedStyles: Type.Missing, 
+            UseHyperlinks: true, 
+            HidePageNumbersInWeb: false, 
+            UseOutlineLevels: true);
 
-            // Get a range for Section 1 and collapse it to the start
-            Word.Range titleRange = titleSection.Range;
-            titleRange.Collapse(Word.WdCollapseDirection.wdCollapseStart);
+        // --- 4. Adjust Page Setup for Section 1 (Title Block) ---
+        // If desired, keep Section 1 vertically centered.
+        doc.Sections[1].PageSetup.VerticalAlignment = Word.WdVerticalAlignment.wdAlignVerticalCenter;
 
-            string fontName = dropDownFont.SelectedItem?.ToString() ?? "Times New Roman";
 
-            // Insert Title Paragraph (font size 36, centered)
-            int nParagraphCount = titleSection.Range.Paragraphs.Count;
-            Word.Paragraph titleParagraph = titleSection.Range.Paragraphs.Add(titleRange);
-            nParagraphCount = titleSection.Range.Paragraphs.Count;
-            titleParagraph.Range.Text = title.Text.Trim();
-            titleParagraph.Range.Font.Name = fontName;
-            titleParagraph.Range.Font.Size = 36;
-            titleParagraph.Alignment = Word.WdParagraphAlignment.wdAlignParagraphCenter;
-
-            nParagraphCount = titleSection.Range.Paragraphs.Count;
-        }
-
+                */
         private void EstablishNewOutline(NovelMetaData novelMetaData)
         {
             var outline = novelMetaData.TheOutline;
