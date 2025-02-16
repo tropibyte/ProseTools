@@ -643,6 +643,12 @@
     <Compile Include="GenAI_Login.Designer.cs">
       <DependentUpon>GenAI_Login.cs</DependentUpon>
     </Compile>
+    <Compile Include="InputDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="InputDialog.Designer.cs">
+      <DependentUpon>InputDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="Location.cs" />
     <Compile Include="Logging.cs" />
     <Compile Include="ManageCharacters.cs">
@@ -656,6 +662,12 @@
     </Compile>
     <Compile Include="MetadataManagerForm.Designer.cs">
       <DependentUpon>MetadataManagerForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="AddNode.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AddNode.Designer.cs">
+      <DependentUpon>AddNode.cs</DependentUpon>
     </Compile>
     <Compile Include="NewChapterDialog.cs">
       <SubType>Form</SubType>
@@ -748,11 +760,17 @@
     <EmbeddedResource Include="EditNameDialog.resx">
       <DependentUpon>EditNameDialog.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="InputDialog.resx">
+      <DependentUpon>InputDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ManageCharacters.resx">
       <DependentUpon>ManageCharacters.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MetadataManagerForm.resx">
       <DependentUpon>MetadataManagerForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="AddNode.resx">
+      <DependentUpon>AddNode.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="NewChapterDialog.resx">
       <DependentUpon>NewChapterDialog.cs</DependentUpon>

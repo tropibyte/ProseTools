@@ -122,6 +122,7 @@ namespace ProseTools
             this.Ok.TabIndex = 6;
             this.Ok.Text = "Ok";
             this.Ok.UseVisualStyleBackColor = true;
+            this.Ok.Click += new System.EventHandler(this.Ok_Click);
             // 
             // Cancel
             // 
@@ -132,13 +133,14 @@ namespace ProseTools
             this.Cancel.TabIndex = 6;
             this.Cancel.Text = "Cancel";
             this.Cancel.UseVisualStyleBackColor = true;
+            this.Cancel.Click += new System.EventHandler(this.Cancel_Click);
             // 
             // label1
             // 
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(13, 12);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(41, 20);
+            this.label1.Size = new System.Drawing.Size(36, 16);
             this.label1.TabIndex = 7;
             this.label1.Text = "Tree";
             // 
@@ -147,13 +149,13 @@ namespace ProseTools
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(326, 12);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(92, 20);
+            this.label2.Size = new System.Drawing.Size(80, 16);
             this.label2.TabIndex = 7;
             this.label2.Text = "Node/Detail";
             // 
             // OutlineForm
             // 
-            this.ClientSize = new System.Drawing.Size(872, 404);
+            this.ClientSize = new System.Drawing.Size(872, 413);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.Cancel);

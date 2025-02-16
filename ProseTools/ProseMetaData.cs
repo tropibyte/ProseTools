@@ -13,7 +13,7 @@ namespace ProseTools
     /// </summary>
     internal abstract class ProseMetaData
     {
-        protected const string MetadataNamespace = "urn:prosetools:metadata";
+        public const string MetadataNamespace = "urn:prosetools:metadata";
         public Outline TheOutline { get; set; }
 
         public abstract void ReadFromActiveDocument();

@@ -102,17 +102,18 @@ namespace ProseTools
 
         public override XElement ToXML()
         {
-            return new XElement("ProseMetaData",
-                new XAttribute(XNamespace.Xmlns + "ns", MetadataNamespace),
-                new XElement("ProseType", "Novel"),
-                new XElement("Chapters", ListChapters.Select(ch => ch.ToXML())),
-                new XElement("Characters", ListCharacters.Select(c => c.ToXML())),
-                new XElement("Locations", ListLocations.Select(loc => loc.ToXML())),
-                new XElement("Scenes", ListScenes.Select(s => s.ToXML())),
-                new XElement("Notes", ListNotes.Select(n => n.ToXML())),
-                new XElement("Outline", TheOutline.ToXML())
+            XNamespace ns = MetadataNamespace;
+            return new XElement(ns + "ProseMetaData",
+                new XElement(ns + "ProseType", "Novel"),
+                new XElement(ns + "Chapters", ListChapters.Select(ch => ch.ToXML())),
+                new XElement(ns + "Characters", ListCharacters.Select(c => c.ToXML())),
+                new XElement(ns + "Locations", ListLocations.Select(loc => loc.ToXML())),
+                new XElement(ns + "Scenes", ListScenes.Select(s => s.ToXML())),
+                new XElement(ns + "Notes", ListNotes.Select(n => n.ToXML())),
+                new XElement(ns + "Outline", TheOutline.ToXML())
             );
         }
+
 
         public void AddChapter(Chapter chapter) => ListChapters.AddLast(chapter);
 

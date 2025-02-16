@@ -1,7 +1,9 @@
-﻿using System;
+﻿using edu.stanford.nlp.ling;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Windows.Forms;
+using Word = Microsoft.Office.Interop.Word;
 
 namespace ProseTools
 {
@@ -40,6 +42,9 @@ namespace ProseTools
         public OutlineForm()
         {
             InitializeComponent();
+            richTextBoxDetails.ReadOnly = true;
+            richTextBoxDetails.ShortcutsEnabled = false;
+            richTextBoxDetails.BackColor = treeView1.BackColor;//System.Drawing.Color.White;
         }
 
         private void OutlineForm_Load(object sender, EventArgs e)
@@ -85,32 +90,37 @@ namespace ProseTools
 
         private void TreeView1_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            // Ensure a node is selected
             if (e.Node?.Tag is OutlineNode selectedNode)
             {
-                // Populate the richTextBoxDetails with the node's details
-                StringBuilder details = new StringBuilder();
-                details.AppendLine($"Title: {selectedNode.Title}");
-                details.AppendLine($"Details: {selectedNode.Details}");
-
-                if (selectedNode.Attributes != null && selectedNode.Attributes.Count > 0)
-                {
-                    details.AppendLine("\nAttributes:");
-                    foreach (var attribute in selectedNode.Attributes)
-                    {
-                        details.AppendLine($"{attribute.Key}: {attribute.Value}");
-                    }
-                }
-
-                richTextBoxDetails.Text = details.ToString();
+                richTextBoxDetails.Text = BuildNodeDetailsText(selectedNode);
             }
             else
             {
-                // Clear the richTextBoxDetails if no valid node is selected
                 richTextBoxDetails.Clear();
             }
         }
 
+        private string BuildNodeDetailsText(OutlineNode node)
+        {
+            if (node == null)
+                return string.Empty;
+
+            StringBuilder details = new StringBuilder();
+            details.AppendLine($"Title: {node.Title}");
+            details.AppendLine($"Details: {node.Details}");
+            details.AppendLine($"Notes: {node.Notes}");
+
+            if (node.Attributes != null && node.Attributes.Count > 0)
+            {
+                details.AppendLine("\nAttributes:");
+                foreach (var attribute in node.Attributes)
+                {
+                    details.AppendLine($"{attribute.Key}: {attribute.Value}");
+                }
+            }
+
+            return details.ToString();
+        }
 
         private void OutlineForm_Resize(object sender, EventArgs e)
         {
@@ -168,14 +178,12 @@ namespace ProseTools
         {
             treeView1.Nodes.Clear();
 
-            if (_outline == null || _outline.Nodes.Count == 0)
+            // If using the new design, we expect a single root node.
+            if (_outline == null || _outline.RootNode == null)
                 return;
 
-            foreach (var node in _outline.Nodes)
-            {
-                var treeNode = CreateTreeNode(node);
-                treeView1.Nodes.Add(treeNode);
-            }
+            var rootTreeNode = CreateTreeNode(_outline.RootNode);
+            treeView1.Nodes.Add(rootTreeNode);
 
             treeView1.ExpandAll();
         }
@@ -203,36 +211,94 @@ namespace ProseTools
 
         private void buttonAdd_Click(object sender, EventArgs e)
         {
-            var newNodeTitle = PromptForInput("Enter node title:", "Add Node");
-            if (string.IsNullOrWhiteSpace(newNodeTitle))
-                return;
-
-            var selectedNode = treeView1.SelectedNode?.Tag as OutlineNode;
-            var newNode = new OutlineNode { Title = newNodeTitle };
-
-            if (selectedNode != null)
+            // Check if a node is selected.
+            string parentName = string.Empty;
+            if (treeView1.SelectedNode?.Tag is OutlineNode selNode)
             {
-                selectedNode.AddChild(newNode);
+                // Use the title of the selected node as the parent.
+                parentName = selNode.Title;
+            }
+            else if (_outline != null && _outline.RootNode != null)
+            {
+                // If no node is selected, use the root node's title.
+                parentName = _outline.RootNode.Title;
             }
             else
             {
-                _outline.AddNode(newNode);
+                parentName = "None"; // Or handle this case as needed.
             }
+            // Open the dialog with empty values.
+            using (var dialog = new AddNodeDlg(parentName))
+            {
+                if (dialog.ShowDialog(this) == DialogResult.OK)
+                {
+                    // Create a new node using all fields from the dialog.
+                    var newNode = new OutlineNode
+                    {
+                        Title = dialog.NodeTitle,
+                        Details = dialog.NodeDetails,
+                        Notes = dialog.NodeNotes
+                    };
 
-            PopulateTreeView();
+                    // If a node is selected, add as a child of that node.
+                    if (treeView1.SelectedNode?.Tag is OutlineNode selectedNode)
+                    {
+                        // Optionally check for duplicates under the selected node.
+                        if (selectedNode.FindChild(newNode.Title) == null)
+                            selectedNode.AddChild(newNode);
+                        else
+                            MessageBox.Show("A node with that title already exists under the selected node.");
+                    }
+                    else
+                    {
+                        // No node is selected; add the new node as a child of the root.
+                        if (_outline != null && _outline.RootNode != null)
+                        {
+                            if (_outline.RootNode.FindChild(newNode.Title) == null)
+                                _outline.RootNode.AddChild(newNode);
+                            else
+                                MessageBox.Show("A node with that title already exists under the root node.");
+                        }
+                        else
+                        {
+                            MessageBox.Show("The outline has no root node. Please initialize the outline first.");
+                            return;
+                        }
+                    }
+
+                    PopulateTreeView();
+                }
+            }
         }
 
         private void buttonEdit_Click(object sender, EventArgs e)
         {
+            // First, ensure a node is selected.
             if (!(treeView1.SelectedNode?.Tag is OutlineNode selectedNode))
                 return;
 
-            var updatedTitle = PromptForInput("Edit node title:", "Edit Node", selectedNode.Title);
-            if (string.IsNullOrWhiteSpace(updatedTitle))
-                return;
+            // Determine the parent node's title.
+            string parentName = "None";
+            TreeNode parentTreeNode = FindParentNode(treeView1.SelectedNode);
+            if (parentTreeNode?.Tag is OutlineNode parentNode)
+            {
+                parentName = parentNode.Title;
+            }
 
-            selectedNode.Title = updatedTitle;
-            PopulateTreeView();
+            // Open the dialog for editing, passing the parent node name.
+            using (var dialog = new AddNodeDlg(selectedNode.Title, selectedNode.Details, selectedNode.Notes, parentName))
+            {
+                dialog.Text = "Modify Node"; // Optional: set a specific title for editing.
+                if (dialog.ShowDialog(this) == DialogResult.OK)
+                {
+                    // Update the selected node with the new values.
+                    selectedNode.Title = dialog.NodeTitle;
+                    selectedNode.Details = dialog.NodeDetails;
+                    selectedNode.Notes = dialog.NodeNotes;
+                    PopulateTreeView();
+                    BuildNodeDetailsText(selectedNode);
+                }
+            }
         }
 
         private void buttonDelete_Click(object sender, EventArgs e)
@@ -240,23 +306,104 @@ namespace ProseTools
             if (!(treeView1.SelectedNode?.Tag is OutlineNode selectedNode))
                 return;
 
-            var parentNode = FindParentNode(treeView1.SelectedNode);
+            // Prevent deletion of the root node.
+            if (_outline != null && _outline.RootNode == selectedNode)
+            {
+                MessageBox.Show("Cannot delete the root node.");
+                return;
+            }
 
+            // Find the parent node using the tree's structure.
+            var parentNode = FindParentNode(treeView1.SelectedNode);
             if (parentNode?.Tag is OutlineNode parentOutlineNode)
             {
                 parentOutlineNode.DeleteChild(selectedNode.Title);
             }
             else
             {
-                _outline.DeleteNode(selectedNode.Title);
+                MessageBox.Show("Parent node not found.");
             }
 
             PopulateTreeView();
         }
 
+
         private void buttonScan_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Scanning functionality not yet implemented.");
+            try
+            {
+                // Get the active document from Word.
+                var activeDoc = Globals.ThisAddIn.Application.ActiveDocument;
+                if (activeDoc == null)
+                {
+                    MessageBox.Show("No active document found.");
+                    return;
+                }
+
+                // Ensure _outline exists and has a root. If not, create a default root.
+                if (_outline == null)
+                    _outline = new Outline();
+
+                if (_outline.RootNode == null)
+                {
+                    // Create a default root node if one doesn't exist.
+                    var defaultRoot = new OutlineNode
+                    {
+                        Title = "Book Metadata",
+                        Details = "Default Book Metadata"
+                    };
+                    _outline.InitializeRoot(defaultRoot);
+                }
+
+                int addedCount = 0; // Count new chapters added.
+
+                // Loop through paragraphs and detect chapters based on the desired styles.
+                foreach (Word.Paragraph para in activeDoc.Paragraphs)
+                {
+                    var style = para.get_Style() as Word.Style;
+                    if (style != null &&
+                        (style.NameLocal.Equals("Prose Chapter", StringComparison.CurrentCultureIgnoreCase) ||
+                         style.NameLocal.Equals("Heading 1", StringComparison.CurrentCultureIgnoreCase)))
+                    {
+                        var chapterTitle = para.Range.Text.Trim();
+
+                        // Exclude Table of Contents entries.
+                        if (chapterTitle.StartsWith("Table of Contents", StringComparison.CurrentCultureIgnoreCase))
+                            continue;
+
+                        if (!string.IsNullOrWhiteSpace(chapterTitle))
+                        {
+                            // Check for duplicates in the root's children.
+                            if (_outline.RootNode.FindChild(chapterTitle) == null)
+                            {
+                                var chapterNode = new OutlineNode
+                                {
+                                    Title = chapterTitle,
+                                    Details = "Double-click to edit details or add notes.",
+                                    Notes = string.Empty
+                                };
+
+                                _outline.RootNode.AddChild(chapterNode);
+                                addedCount++;
+                            }
+                        }
+                    }
+                }
+
+                if (addedCount == 0)
+                {
+                    MessageBox.Show("No new chapters found to add.");
+                }
+                else
+                {
+                    PopulateTreeView();
+                    MessageBox.Show($"{addedCount} chapter(s) added to the outline.");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("An error occurred while scanning: " + ex.Message);
+            }
         }
 
         private TreeNode FindParentNode(TreeNode childNode)
@@ -285,9 +432,72 @@ namespace ProseTools
             return null;
         }
 
-        private string PromptForInput(string prompt, string title, string defaultValue = "")
+        private string PromptForInput(string prompt, string title, string defaultValue = "", bool multiline = false)
         {
-            return string.Empty;
+            using (var dialog = new InputDialog(prompt, title, defaultValue, multiline))
+            {
+                if (dialog.ShowDialog(this) == DialogResult.OK)
+                {
+                    return dialog.InputValue;
+                }
+            }
+            return defaultValue; // or return string.Empty if canceled
+        }
+
+        private void Ok_Click(object sender, EventArgs e)
+        {
+            SaveOutline();
+            this.DialogResult = DialogResult.OK;
+            this.Close();
+        }
+
+        private void Cancel_Click(object sender, EventArgs e)
+        {
+            this.DialogResult = DialogResult.Cancel;
+            this.Close();
+        }
+
+        // Trigger editing on double-click.
+        private void richTextBoxDetails_DoubleClick(object sender, EventArgs e)
+        {
+            EditSelectedNode();
+        }
+
+        // Trigger editing on Ctrl+Enter.
+        private void richTextBoxDetails_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter && e.Control)
+            {
+                EditSelectedNode();
+                // Prevent the beep sound that may occur on Enter.
+                e.SuppressKeyPress = true;
+            }
+        }
+
+        // Consolidate the editing functionality into one method.
+        private void EditSelectedNode()
+        {
+            if (treeView1.SelectedNode?.Tag is OutlineNode selectedNode)
+            {
+                // Allow editing details.
+                var updatedDetails = PromptForInput("Edit details:", "Edit Node", selectedNode.Details);
+                if (string.IsNullOrWhiteSpace(updatedDetails))
+                    return;
+                selectedNode.Details = updatedDetails;
+
+                // Allow editing notes.
+                var updatedNotes = PromptForInput("Edit notes:", "Edit Node", selectedNode.Notes);
+                if (string.IsNullOrWhiteSpace(updatedNotes))
+                    return;
+                selectedNode.Notes = updatedNotes;
+
+                PopulateTreeView();
+            }
+        }
+
+        private void SaveOutline()
+        {
+            // Implement saving logic here
         }
     }
 }

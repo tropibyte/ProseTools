@@ -33,10 +33,10 @@ namespace ProseTools
 
         public override XElement ToXML()
         {
-            return new XElement("ProseMetaData",
-                new XAttribute(XNamespace.Xmlns + "ns", MetadataNamespace),
-                new XElement("ProseType", "Screenplay")
+            XNamespace ns = MetadataNamespace;
+            return new XElement(ns + "ProseMetaData",
+                new XElement(ns + "ProseType", "Screenplay")
             );
         }
-        }
+    }
 }

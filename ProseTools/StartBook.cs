@@ -165,7 +165,7 @@ namespace ProseTools
                     if (Globals.ThisAddIn._ProseMetaData is null || Globals.ThisAddIn._ProseMetaData is NullMetaData)
                     {
                         Globals.ThisAddIn._ProseMetaData = new NovelMetaData();
-                        EstablishNewOutline((NovelMetaData)Globals.ThisAddIn._ProseMetaData);
+                        EstablishNewNovelOutline((NovelMetaData)Globals.ThisAddIn._ProseMetaData);
                     }
                 }
 
@@ -199,7 +199,7 @@ namespace ProseTools
 
             // Add document styles and initialize the outline.
             AddStylesToDocument(doc);
-            EstablishNewOutline(novelMetaData);
+            EstablishNewNovelOutline(novelMetaData);
 
             // Get an insertion point at the very beginning of the document.
             Word.Range startRange = doc.Range(0, 0);
@@ -525,23 +525,26 @@ namespace ProseTools
 
 
                 */
-        private void EstablishNewOutline(NovelMetaData novelMetaData)
+        private void EstablishNewNovelOutline(NovelMetaData novelMetaData)
         {
             var outline = novelMetaData.TheOutline;
+            // Create the root Book node.
             var rootNode = new OutlineNode
             {
                 Title = "Book Metadata",
                 Details = "Metadata for the book",
                 Attributes = new Dictionary<string, string>
-        {
-            { "ProseType", "Book" },
-            { "SubType", "Fiction" },
-            { "Genre", "Mystery" } // Example genre, can be dynamic
-        }
+                {
+                    { "ProseType", "Book" },
+                    { "SubType", "Fiction" },
+                    { "Genre", "Mystery" } // Example genre
+                }
             };
-            outline.AddNode(rootNode);
 
-            // Add title to the outline as a child of the root node
+            // Initialize the outline with the Book root.
+            outline.InitializeRoot(rootNode);
+
+            // Add child nodes to the root:
             var titleNode = new OutlineNode
             {
                 Title = "Title",
@@ -549,10 +552,8 @@ namespace ProseTools
             };
             rootNode.AddChild(titleNode);
 
-            // Insert Subtitle if present
             if (!string.IsNullOrWhiteSpace(subtitle.Text.Trim()))
             {
-                // Add subtitle to the outline
                 var subtitleNode = new OutlineNode
                 {
                     Title = "Subtitle",
@@ -566,13 +567,6 @@ namespace ProseTools
                 Title = "Foreword",
                 Details = "Foreword section of the book."
             });
-
-            rootNode.AddChild(new OutlineNode
-            {
-                Title = "Chapter 1",
-                Details = "This is the first chapter of the book."
-            });
-
         }
 
         private bool SetupMetadata()

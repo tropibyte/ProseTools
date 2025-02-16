@@ -261,15 +261,17 @@ namespace ProseTools
                 Title = "Research Paper Metadata",
                 Details = "Metadata for the research paper",
                 Attributes = new Dictionary<string, string>
-        {
-            { "ProseType", "Research Paper" },
-            { "Format", comboBoxFormat.SelectedItem?.ToString() ?? "APA" }, // Format dynamically set
-            { "Institution", textBoxInstitution.Text.Trim() },
-            { "Course", textBoxCourse.Text.Trim() },
-            { "Professor", textBoxProfessor.Text.Trim() }
-        }
+                {
+                    { "ProseType", "Research Paper" },
+                    { "Format", comboBoxFormat.SelectedItem?.ToString() ?? "APA" }, // Format dynamically set
+                    { "Institution", textBoxInstitution.Text.Trim() },
+                    { "Course", textBoxCourse.Text.Trim() },
+                    { "Professor", textBoxProfessor.Text.Trim() }
+                }
             };
-            outline.AddNode(rootNode);
+
+            // Instead of adding to a list, set the root node
+            outline.InitializeRoot(rootNode);
 
             // Add child nodes for each major section of the research paper
             var titlePageNode = new OutlineNode
