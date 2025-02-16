@@ -10,20 +10,19 @@ using System.Windows.Forms;
 
 namespace ProseTools
 {
-    public partial class aiSettingsDlg : Form
+    public partial class GenAISettingsDlg : Form
     {
-        internal string m_genAIName;
         public GenAIConfig Config { get; private set; }
 
-        public aiSettingsDlg(string genAIName)
+        public GenAISettingsDlg(GenAIConfig genAIConfig)
         {
             InitializeComponent();
-            m_genAIName = genAIName;
+            Config = genAIConfig;
         }
 
-        private void aiSettingsDlg_Load(object sender, EventArgs e)
+        private void GenAISettingsDlg_Load(object sender, EventArgs e)
         {
-            labelGenAI.Text = m_genAIName;
+            labelGenAI.Text = Config.Name;
         }
 
         // OK button click event
@@ -32,7 +31,7 @@ namespace ProseTools
             // Build the GenAIConfig using the values from the controls.
             Config = new GenAIConfig
             {
-                Name = m_genAIName,
+                Name = Config.Name,
                 Username = txtUsername.Text.Trim(),
                 Password = txtPassword.Text, // In a real app, consider secure storage!
                 ApiKey = txtApiKey.Text.Trim(),

@@ -87,19 +87,11 @@ internal class Outline
     /// <summary>
     /// Serializes the outline to XML.
     /// </summary>
+
     public XElement ToXML()
     {
         XNamespace ns = ProseMetaData.MetadataNamespace;
-        if (rootNode != null)
-        {
-            // Serialize the single root node
-            return rootNode.ToXML();
-        }
-        else
-        {
-            // Return an empty Outline element in the proper namespace.
-            return new XElement(ns + "Outline");
-        }
+        return rootNode != null ? rootNode.ToXML() : new XElement(ns + "Node");
     }
 
 
@@ -111,8 +103,26 @@ internal class Outline
         if (element == null)
             throw new ArgumentNullException(nameof(element), "Provided XML element is null.");
 
-        // Assume the root node is the first "Node" element.
-        var rootElement = element.Element("Node");
+        XNamespace ns = ProseMetaData.MetadataNamespace;
+        XElement rootElement = null;
+
+        string xml = element.ToString();
+
+        // If the element is named "Outline", try to find the "Node" child.
+        if (element.Name == ns + "Outline")
+        {
+            // Otherwise, try to get the direct <Node> child.
+            rootElement = element.Element(ns + "Node");
+            // If not found, use the element itself.
+            if (rootElement == null)
+                rootElement = element;
+        }
+        // If the element is already a Node, use it directly.
+        else if (element.Name == ns + "Node")
+        {
+            rootElement = element;
+        }
+
         if (rootElement == null)
             throw new InvalidOperationException("No root node found in XML.");
 
@@ -147,7 +157,7 @@ internal class Outline
                 string chapterTitle = para.Range.Text.Trim();
 
                 // Exclude Table of Contents entries.
-                if (chapterTitle.StartsWith("Table of Contents", StringComparison.CurrentCultureIgnoreCase))
+                if (chapterTitle.StartsWith(TOCName(), StringComparison.CurrentCultureIgnoreCase))
                     continue;
 
                 if (!string.IsNullOrWhiteSpace(chapterTitle))
@@ -169,6 +179,11 @@ internal class Outline
             }
         }
         return addedCount;
+    }
+
+    private string TOCName()
+    {
+        return "Table of Contents";
     }
 }
 
@@ -230,23 +245,24 @@ internal class OutlineNode
     // Deserialize from XML
     public static OutlineNode FromXML(XElement element)
     {
+        XNamespace ns = ProseMetaData.MetadataNamespace;
         var node = new OutlineNode
         {
-            Title = element.Element("Title")?.Value,
-            Details = element.Element("Details")?.Value,
-            Notes = element.Element("Notes")?.Value
+            Title = element.Element(ns + "Title")?.Value,
+            Details = element.Element(ns + "Details")?.Value,
+            Notes = element.Element(ns + "Notes")?.Value
         };
 
-        var attributes = element.Element("Attributes");
+        var attributes = element.Element(ns + "Attributes");
         if (attributes != null)
         {
             node.Attributes = attributes.Elements().ToDictionary(attr => attr.Name.LocalName, attr => attr.Value);
         }
 
-        var children = element.Element("Children");
+        var children = element.Element(ns + "Children");
         if (children != null)
         {
-            node.children = children.Elements("Node").Select(FromXML).ToList();
+            node.children = children.Elements(ns + "Node").Select(FromXML).ToList();
         }
         return node;
     }

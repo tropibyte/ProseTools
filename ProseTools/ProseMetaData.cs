@@ -15,6 +15,10 @@ namespace ProseTools
     {
         public const string MetadataNamespace = "urn:prosetools:metadata";
         public Outline TheOutline { get; set; }
+        public abstract string _name { get; }
+        // New property for document-specific settings.
+        public DocumentSettings DocumentSettings { get; set; }
+
 
         public abstract void ReadFromActiveDocument();
         public abstract void WriteToActiveDocument();
@@ -22,6 +26,7 @@ namespace ProseTools
         public ProseMetaData()
         {
             TheOutline = new Outline();
+            DocumentSettings = new DocumentSettings();
         }
         /// <summary>
         /// Factory method to determine prose type and return the correct metadata class.
@@ -36,18 +41,28 @@ namespace ProseTools
                 if (part.NamespaceURI == MetadataNamespace)
                 {
                     var metadataXml = XElement.Parse(part.XML);
-                    string proseType = metadataXml.Element("ProseType")?.Value ?? "Novel";
+                    XNamespace ns = MetadataNamespace;
+                    string proseType = metadataXml.Element(ns + "ProseType")?.Value ?? "Novel";
 
-                    switch (proseType)
+                    if(proseType == "Novel" || proseType == NovelMetaData.Name)
                     {
-                        case "Novel":
-                            return new NovelMetaData(metadataXml);
-                        case "ResearchPaper":
-                            return new ResearchPaperMetaData(metadataXml);
-                        case "Screenplay":
-                            return new ScreenplayMetaData(metadataXml);
-                        default:
-                            return new NullMetaData(); // Default to NullMetaData if invalid
+                        return new NovelMetaData(metadataXml);
+                    }
+                    else if (proseType == "ResearchPaper" || proseType == ResearchPaperMetaData.Name)
+                    {
+                        return new ResearchPaperMetaData(metadataXml);
+                    }
+                    else if (proseType == "TechnicalPaper" || proseType == TechnicalPaperMetaData.Name)
+                    {
+                        return new TechnicalPaperMetaData(metadataXml);
+                    }
+                    else if (proseType == "Screenplay" || proseType == ScreenplayMetaData.Name)
+                    {
+                        return new ScreenplayMetaData(metadataXml);
+                    }
+                    else
+                    {
+                        return new NullMetaData(); // Default to NullMetaData if invalid
                     }
                 }
             }
@@ -61,12 +76,32 @@ namespace ProseTools
         /// <returns>An XElement representing the metadata.</returns>
         public virtual XElement ToXML()
         {
+            XNamespace ns = MetadataNamespace;
             // A base version that outputs a minimal structure.
             // Derived classes should override this to output the complete details.
             return new XElement("ProseMetaData",
                 new XAttribute(XNamespace.Xmlns + "ns", MetadataNamespace),
-                new XElement("ProseType", "NullMetaData")
+                new XElement("ProseType", "NullMetaData"),
+            new XElement("DocumentSettings", DocumentSettings.ToXML().Elements()) // flatten inner DocumentSettings elements
             );
+        }
+
+        public static ProseMetaData LoadFromXml(XElement xml)
+        {
+            string proseType = xml.Element(XNamespace.Get(MetadataNamespace) + "ProseType")?.Value ?? "Novel";
+            switch (proseType)
+            {
+                case "Novel":
+                    return new NovelMetaData(xml);
+                case "ResearchPaper":
+                    return new ResearchPaperMetaData(xml);
+                case "TechnicalPaper":
+                    return new TechnicalPaperMetaData(xml);
+                case "Screenplay":
+                    return new ScreenplayMetaData(xml);
+                default:
+                    return new NullMetaData();
+            }
         }
     }
 }

@@ -10,6 +10,9 @@ namespace ProseTools
 {
     internal class ResearchPaperMetaData : ProseMetaData
     {
+        public static readonly string Name = "Research or Academic Paper";
+        public override string _name => Name;
+
         public ResearchPaperMetaData() { }
 
         public ResearchPaperMetaData(XElement metadataXml) { }
@@ -35,7 +38,8 @@ namespace ProseTools
         {
             XNamespace ns = MetadataNamespace;
             return new XElement(ns + "ProseMetaData",
-                new XElement(ns + "ProseType", "ResearchPaper")
+                new XElement(ns + "ProseType", Name),
+                new XElement(ns + "DocumentSettings", DocumentSettings.ToXML())
             );
         }
 

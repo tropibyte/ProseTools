@@ -49,56 +49,60 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(13, 13);
+            this.label1.Location = new System.Drawing.Point(12, 10);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(38, 20);
+            this.label1.Size = new System.Drawing.Size(33, 16);
             this.label1.TabIndex = 0;
             this.label1.Text = "Title";
             // 
             // title
             // 
-            this.title.Location = new System.Drawing.Point(17, 42);
+            this.title.Location = new System.Drawing.Point(15, 34);
+            this.title.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.title.Name = "title";
-            this.title.Size = new System.Drawing.Size(412, 26);
+            this.title.Size = new System.Drawing.Size(367, 22);
             this.title.TabIndex = 1;
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(13, 82);
+            this.label2.Location = new System.Drawing.Point(12, 66);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(63, 20);
+            this.label2.Size = new System.Drawing.Size(51, 16);
             this.label2.TabIndex = 0;
             this.label2.Text = "Subtitle";
             // 
             // subtitle
             // 
-            this.subtitle.Location = new System.Drawing.Point(17, 109);
+            this.subtitle.Location = new System.Drawing.Point(15, 87);
+            this.subtitle.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.subtitle.Name = "subtitle";
-            this.subtitle.Size = new System.Drawing.Size(412, 26);
+            this.subtitle.Size = new System.Drawing.Size(367, 22);
             this.subtitle.TabIndex = 2;
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(13, 157);
+            this.label3.Location = new System.Drawing.Point(12, 126);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(57, 20);
+            this.label3.Size = new System.Drawing.Size(45, 16);
             this.label3.TabIndex = 0;
             this.label3.Text = "Author";
             // 
             // author
             // 
-            this.author.Location = new System.Drawing.Point(17, 187);
+            this.author.Location = new System.Drawing.Point(15, 150);
+            this.author.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.author.Name = "author";
-            this.author.Size = new System.Drawing.Size(412, 26);
+            this.author.Size = new System.Drawing.Size(367, 22);
             this.author.TabIndex = 3;
             // 
             // buttonStart
             // 
-            this.buttonStart.Location = new System.Drawing.Point(470, 13);
+            this.buttonStart.Location = new System.Drawing.Point(406, 10);
+            this.buttonStart.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.buttonStart.Name = "buttonStart";
-            this.buttonStart.Size = new System.Drawing.Size(75, 23);
+            this.buttonStart.Size = new System.Drawing.Size(79, 23);
             this.buttonStart.TabIndex = 8;
             this.buttonStart.Text = "Start";
             this.buttonStart.UseVisualStyleBackColor = true;
@@ -106,9 +110,10 @@
             // 
             // cancel
             // 
-            this.cancel.Location = new System.Drawing.Point(470, 42);
+            this.cancel.Location = new System.Drawing.Point(406, 37);
+            this.cancel.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.cancel.Name = "cancel";
-            this.cancel.Size = new System.Drawing.Size(75, 23);
+            this.cancel.Size = new System.Drawing.Size(79, 23);
             this.cancel.TabIndex = 9;
             this.cancel.Text = "Cancel";
             this.cancel.UseVisualStyleBackColor = true;
@@ -117,43 +122,45 @@
             // dropDownFont
             // 
             this.dropDownFont.FormattingEnabled = true;
-            this.dropDownFont.Location = new System.Drawing.Point(17, 264);
+            this.dropDownFont.Location = new System.Drawing.Point(15, 211);
+            this.dropDownFont.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.dropDownFont.Name = "dropDownFont";
-            this.dropDownFont.Size = new System.Drawing.Size(412, 28);
+            this.dropDownFont.Size = new System.Drawing.Size(367, 24);
             this.dropDownFont.TabIndex = 4;
             // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(17, 238);
+            this.label4.Location = new System.Drawing.Point(15, 190);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(42, 20);
+            this.label4.Size = new System.Drawing.Size(33, 16);
             this.label4.TabIndex = 4;
             this.label4.Text = "Font";
             // 
             // proseChapter
             // 
             this.proseChapter.AutoSize = true;
-            this.proseChapter.Location = new System.Drawing.Point(17, 324);
+            this.proseChapter.Location = new System.Drawing.Point(15, 259);
             this.proseChapter.Name = "proseChapter";
-            this.proseChapter.Size = new System.Drawing.Size(111, 20);
+            this.proseChapter.Size = new System.Drawing.Size(93, 16);
             this.proseChapter.TabIndex = 5;
             this.proseChapter.Text = "Prose Chapter";
             // 
             // proseText
             // 
             this.proseText.AutoSize = true;
-            this.proseText.Location = new System.Drawing.Point(17, 407);
+            this.proseText.Location = new System.Drawing.Point(15, 326);
             this.proseText.Name = "proseText";
-            this.proseText.Size = new System.Drawing.Size(84, 20);
+            this.proseText.Size = new System.Drawing.Size(72, 16);
             this.proseText.TabIndex = 5;
             this.proseText.Text = "Prose Text";
             // 
             // SetProseChapterFontInfoButton
             // 
-            this.SetProseChapterFontInfoButton.Location = new System.Drawing.Point(353, 321);
+            this.SetProseChapterFontInfoButton.Location = new System.Drawing.Point(301, 257);
+            this.SetProseChapterFontInfoButton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.SetProseChapterFontInfoButton.Name = "SetProseChapterFontInfoButton";
-            this.SetProseChapterFontInfoButton.Size = new System.Drawing.Size(75, 23);
+            this.SetProseChapterFontInfoButton.Size = new System.Drawing.Size(80, 28);
             this.SetProseChapterFontInfoButton.TabIndex = 5;
             this.SetProseChapterFontInfoButton.Text = "Set...";
             this.SetProseChapterFontInfoButton.UseVisualStyleBackColor = true;
@@ -161,9 +168,10 @@
             // 
             // SetProseTextFontInfoButton
             // 
-            this.SetProseTextFontInfoButton.Location = new System.Drawing.Point(353, 406);
+            this.SetProseTextFontInfoButton.Location = new System.Drawing.Point(301, 321);
+            this.SetProseTextFontInfoButton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.SetProseTextFontInfoButton.Name = "SetProseTextFontInfoButton";
-            this.SetProseTextFontInfoButton.Size = new System.Drawing.Size(75, 23);
+            this.SetProseTextFontInfoButton.Size = new System.Drawing.Size(80, 26);
             this.SetProseTextFontInfoButton.TabIndex = 7;
             this.SetProseTextFontInfoButton.Text = "Set...";
             this.SetProseTextFontInfoButton.UseVisualStyleBackColor = true;
@@ -172,17 +180,18 @@
             // proseSubchapter
             // 
             this.proseSubchapter.AutoSize = true;
-            this.proseSubchapter.Location = new System.Drawing.Point(17, 364);
+            this.proseSubchapter.Location = new System.Drawing.Point(15, 291);
             this.proseSubchapter.Name = "proseSubchapter";
-            this.proseSubchapter.Size = new System.Drawing.Size(137, 20);
+            this.proseSubchapter.Size = new System.Drawing.Size(115, 16);
             this.proseSubchapter.TabIndex = 5;
             this.proseSubchapter.Text = "Prose Subchapter";
             // 
             // SetProseSubchapterFontInfoButton
             // 
-            this.SetProseSubchapterFontInfoButton.Location = new System.Drawing.Point(353, 363);
+            this.SetProseSubchapterFontInfoButton.Location = new System.Drawing.Point(301, 290);
+            this.SetProseSubchapterFontInfoButton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.SetProseSubchapterFontInfoButton.Name = "SetProseSubchapterFontInfoButton";
-            this.SetProseSubchapterFontInfoButton.Size = new System.Drawing.Size(75, 23);
+            this.SetProseSubchapterFontInfoButton.Size = new System.Drawing.Size(80, 27);
             this.SetProseSubchapterFontInfoButton.TabIndex = 6;
             this.SetProseSubchapterFontInfoButton.Text = "Set...";
             this.SetProseSubchapterFontInfoButton.UseVisualStyleBackColor = true;
@@ -190,9 +199,9 @@
             // 
             // StartBook
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(572, 474);
+            this.ClientSize = new System.Drawing.Size(508, 379);
             this.Controls.Add(this.SetProseSubchapterFontInfoButton);
             this.Controls.Add(this.SetProseTextFontInfoButton);
             this.Controls.Add(this.SetProseChapterFontInfoButton);
@@ -210,6 +219,7 @@
             this.Controls.Add(this.title);
             this.Controls.Add(this.label1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "StartBook";

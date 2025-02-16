@@ -10,6 +10,9 @@ namespace ProseTools
 {
     internal class ScreenplayMetaData : ProseMetaData
     {
+        public static readonly string Name = "Screenplay";
+        public override string _name => Name;
+
         public ScreenplayMetaData() { }
 
         public ScreenplayMetaData(XElement metadataXml) { }
@@ -35,7 +38,8 @@ namespace ProseTools
         {
             XNamespace ns = MetadataNamespace;
             return new XElement(ns + "ProseMetaData",
-                new XElement(ns + "ProseType", "Screenplay")
+                new XElement(ns + "ProseType", Name),
+                new XElement(ns + "DocumentSettings", DocumentSettings.ToXML())
             );
         }
     }

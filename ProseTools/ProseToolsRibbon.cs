@@ -135,6 +135,10 @@ namespace ProseTools
                         UpdateRibbonVisibility();
                     }
                 }
+                else if (doc.TablesOfContents.Count > 0)
+                {
+
+                }
             }
             else if (proseType == "Research Paper")
             {
@@ -268,12 +272,12 @@ namespace ProseTools
                 return false;
             }
 
-            // Check if the document already has a Table of Contents.
-            if (wordDoc.TablesOfContents.Count > 0)
-            {
-                MessageBox.Show("The document already contains a Table of Contents.", "Information");
-                return false;
-            }
+            //// Check if the document already has a Table of Contents.
+            //if (wordDoc.TablesOfContents.Count > 0)
+            //{
+            //    MessageBox.Show("The document already contains a Table of Contents.", "Information");
+            //    return false;
+            //}
 
             // All checks passed; the document is valid for starting a new prose.
             return true;
@@ -298,16 +302,6 @@ namespace ProseTools
                 return false;
             }
 
-            var wordDoc = Globals.ThisAddIn.Application.ActiveDocument;
-
-            // Check if the document contains a Table of Contents
-            if (wordDoc.TablesOfContents.Count > 0)
-            {
-                MessageBox.Show("The document already contains a Table of Contents.", "Information");
-                return false;
-            }
-
-            // No Table of Contents found, proceed to open StartBook.cs
             return true;
         }
 
@@ -334,8 +328,8 @@ namespace ProseTools
             string selectedText = genAIDropDown.SelectedItem != null
                 ? genAIDropDown.SelectedItem.Label
                 : genAIDropDown.Items[0].Label;
-            aiSettingsDlg aiSettingsDlg = new aiSettingsDlg(selectedText);
-            if (aiSettingsDlg.ShowDialog() == DialogResult.OK)
+            aiSettingsManagerDlg aiSettingsMgrDlg = new aiSettingsManagerDlg();
+            if (aiSettingsMgrDlg.ShowDialog() == DialogResult.OK)
             {
                 ;
             }

@@ -103,29 +103,21 @@ namespace ProseTools
                 dlg.Title = "Import Metadata";
                 if (dlg.ShowDialog() == DialogResult.OK)
                 {
-                    //try
-                    //{
-                    //    XElement xml = null;
-                    //    if (dlg.FileName.EndsWith(".xml", StringComparison.OrdinalIgnoreCase))
-                    //    {
-                    //        xml = XElement.Load(dlg.FileName);
-                    //    }
-                    //    else if (dlg.FileName.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
-                    //    {
-                    //        string json = File.ReadAllText(dlg.FileName);
-                    //        // Assume the root element name is "ProseMetaData" or use "Root" as fallback.
-                    //        xml = Newtonsoft.Json.JsonConvert.DeserializeXNode(json, "ProseMetaData").Root;
-                    //    }
-                    //    // Convert XML to your ProseMetaData type.
-                    //    // You might implement a static method on ProseMetaData called LoadFromXml:
-                    //    Globals.ThisAddIn._ProseMetaData = ProseMetaData.LoadFromXml(xml);
-                    //    MessageBox.Show("Metadata imported successfully.", "Import Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    //    LoadMetadataTree();
-                    //}
-                    //catch (Exception ex)
-                    //{
-                    //    MessageBox.Show("Error importing metadata: " + ex.Message, "Import Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    //}
+                    XElement xml = null;
+                    if (dlg.FileName.EndsWith(".xml", StringComparison.OrdinalIgnoreCase))
+                    {
+                        xml = XElement.Load(dlg.FileName);
+                    }
+                    else if (dlg.FileName.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
+                    {
+                        string json = File.ReadAllText(dlg.FileName);
+                        // Assuming the root element is "ProseMetaData"
+                        xml = Newtonsoft.Json.JsonConvert.DeserializeXNode(json, "ProseMetaData").Root;
+                    }
+                    // Assuming you have implemented a method like this:
+                    Globals.ThisAddIn._ProseMetaData = ProseMetaData.LoadFromXml(xml);
+                    MessageBox.Show("Metadata imported successfully.", "Import Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    LoadMetadataTree();
                 }
             }
         }
@@ -163,6 +155,33 @@ namespace ProseTools
                     //{
                     //    MessageBox.Show("Error extracting metadata: " + ex.Message, "Extract Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     //}
+                }
+            }
+        }
+
+        private void btnClearMetadata_Click(object sender, EventArgs e)
+        {
+            // Ask for confirmation.
+            var result = MessageBox.Show("Are you sure you want to clear all metadata? This operation is irreversible.",
+                                         "Clear Metadata", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+            if (result == DialogResult.Yes)
+            {
+                try
+                {
+                    // Set the global metadata to a new NullMetaData.
+                    Globals.ThisAddIn._ProseMetaData = new NullMetaData();
+
+                    // Write the (null) metadata to the active document.
+                    Globals.ThisAddIn._ProseMetaData.WriteToActiveDocument();
+
+                    // Optionally, refresh the metadata tree in your manager form.
+                    LoadMetadataTree();
+
+                    MessageBox.Show("Metadata cleared.", "Clear Metadata", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("An error occurred while clearing metadata: " + ex.Message, "Clear Metadata", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
         }

@@ -8,6 +8,7 @@ using System.Windows.Forms;
 using Microsoft.Office.Interop.Word;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Xml.Linq;
 
 
 namespace ProseTools
@@ -17,6 +18,11 @@ namespace ProseTools
     {
         private Microsoft.Office.Tools.CustomTaskPane MyProseToolsTaskPane;
         internal ProseMetaData _ProseMetaData { get; set; }
+        // New property to hold our settings.
+        public ProseToolsSettings Settings { get; set; }
+
+        // Path to the settings file.
+        private const string SettingsFileName = "ProseToolsSettings.xml";
 
         private void ThisAddIn_Startup(object sender, System.EventArgs e)
         {
@@ -29,6 +35,9 @@ namespace ProseTools
 
             // Initialize the Python runtime
             InitializePython();
+
+            // Load Settings
+            LoadSettings();
 
         }
 
@@ -156,15 +165,6 @@ namespace ProseTools
                 MessageBox.Show("Error initializing Python: " + ex.Message, "Initialization Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-
-            // Now you can run Python code safely.
-            //using (Py.GIL())
-            //{
-            //    // Example: Import and use a module.
-            //    dynamic math = Py.Import("math");
-            //    double result = math.sqrt(16);
-            //    MessageBox.Show($"The square root of 16 is {result}", "Python Result", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            //}
         }
 
         /// <summary>
@@ -234,6 +234,48 @@ namespace ProseTools
         public bool IsProseToolsTaskPaneVisible()
         {
             return MyProseToolsTaskPane != null && MyProseToolsTaskPane.Visible;
+        }
+
+        /// <summary>
+        /// Loads the settings from a file.
+        /// </summary>
+        private void LoadSettings()
+        {
+            string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, SettingsFileName);
+            if (File.Exists(path))
+            {
+                try
+                {
+                    XElement xml = XElement.Load(path);
+                    Settings = ProseToolsSettings.FromXML(xml);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error loading settings: " + ex.Message, "Settings Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    Settings = new ProseToolsSettings();
+                }
+            }
+            else
+            {
+                Settings = new ProseToolsSettings();
+            }
+        }
+
+        /// <summary>
+        /// Saves the settings to a file.
+        /// </summary>
+        private void SaveSettings()
+        {
+            try
+            {
+                string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, SettingsFileName);
+                XElement xml = Settings.ToXML();
+                xml.Save(path);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error saving settings: " + ex.Message, "Settings Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         #region VSTO generated code

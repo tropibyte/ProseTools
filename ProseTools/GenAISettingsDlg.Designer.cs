@@ -1,6 +1,6 @@
 ﻿namespace ProseTools
 {
-    partial class aiSettingsDlg
+    partial class GenAISettingsDlg
     {
         /// <summary>
         /// Required designer variable.
@@ -198,7 +198,7 @@
             this.MinimizeBox = false;
             this.Name = "aiSettingsDlg";
             this.Text = "AI Settings";
-            this.Load += new System.EventHandler(this.aiSettingsDlg_Load);
+            this.Load += new System.EventHandler(this.GenAISettingsDlg_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
         }

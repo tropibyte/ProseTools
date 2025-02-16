@@ -9,6 +9,9 @@ namespace ProseTools
 {
     internal class NovelMetaData : ProseMetaData
     {
+        public static readonly string Name = "Novel/Book";
+        public override string _name => Name;
+
         public LinkedList<Chapter> ListChapters { get; set; }
         public List<Character> ListCharacters { get; set; }
         public List<Location> ListLocations { get; set; }
@@ -46,43 +49,76 @@ namespace ProseTools
 
         private void ReadFromXml(XElement metadataXml)
         {
+            XNamespace ns = MetadataNamespace;  // Use the same namespace used in ToXML
+
             try
             {
                 ListChapters = new LinkedList<Chapter>(
-                    metadataXml.Descendants("Chapter").Select(ch => Chapter.FromXML(ch))
+                    metadataXml.Descendants(ns + "Chapter").Select(ch => Chapter.FromXML(ch))
                 );
             }
-            catch { ListChapters = new LinkedList<Chapter>(); }
+            catch
+            {
+                ListChapters = new LinkedList<Chapter>();
+            }
 
             try
             {
-                ListCharacters = metadataXml.Descendants("Character").Select(ch => Character.FromXML(ch)).ToList();
+                ListCharacters = metadataXml.Descendants(ns + "Character")
+                                  .Select(ch => Character.FromXML(ch)).ToList();
             }
-            catch { ListCharacters = new List<Character>(); }
+            catch
+            {
+                ListCharacters = new List<Character>();
+            }
 
             try
             {
-                ListLocations = metadataXml.Descendants("Location").Select(loc => Location.FromXML(loc)).ToList();
+                ListLocations = metadataXml.Descendants(ns + "Location")
+                                  .Select(loc => Location.FromXML(loc)).ToList();
             }
-            catch { ListLocations = new List<Location>(); }
+            catch
+            {
+                ListLocations = new List<Location>();
+            }
 
             try
             {
-                ListScenes = metadataXml.Descendants("Scene").Select(scene => Scene.FromXML(scene)).ToList();
+                ListScenes = metadataXml.Descendants(ns + "Scene")
+                                  .Select(scene => Scene.FromXML(scene)).ToList();
             }
-            catch { ListScenes = new List<Scene>(); }
+            catch
+            {
+                ListScenes = new List<Scene>();
+            }
 
             try
             {
-                ListNotes = metadataXml.Descendants("Note").Select(note => Note.FromXML(note)).ToList();
+                ListNotes = metadataXml.Descendants(ns + "Note")
+                                  .Select(note => Note.FromXML(note)).ToList();
             }
-            catch { ListNotes = new List<Note>(); }
+            catch
+            {
+                ListNotes = new List<Note>();
+            }
 
             try
             {
-                TheOutline = Outline.FromXML(metadataXml.Element("Outline"));
+                // Look for the <Outline> element using the namespace.
+                XElement outlineElement = metadataXml.Element(ns + "Outline");
+                if (outlineElement != null)
+                {
+                    TheOutline = Outline.FromXML(outlineElement);
+                }
+                else
+                {
+                    TheOutline = new Outline();
+                }
             }
-            catch { TheOutline = new Outline(); }
+            catch
+            {
+                TheOutline = new Outline();
+            }
         }
 
         public override void WriteToActiveDocument()
@@ -104,13 +140,14 @@ namespace ProseTools
         {
             XNamespace ns = MetadataNamespace;
             return new XElement(ns + "ProseMetaData",
-                new XElement(ns + "ProseType", "Novel"),
+                new XElement(ns + "ProseType", Name),
                 new XElement(ns + "Chapters", ListChapters.Select(ch => ch.ToXML())),
                 new XElement(ns + "Characters", ListCharacters.Select(c => c.ToXML())),
                 new XElement(ns + "Locations", ListLocations.Select(loc => loc.ToXML())),
                 new XElement(ns + "Scenes", ListScenes.Select(s => s.ToXML())),
                 new XElement(ns + "Notes", ListNotes.Select(n => n.ToXML())),
-                new XElement(ns + "Outline", TheOutline.ToXML())
+                new XElement(ns + "Outline", TheOutline.ToXML()),
+                new XElement(ns + "DocumentSettings", DocumentSettings.ToXML())
             );
         }
 

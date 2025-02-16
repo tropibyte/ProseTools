@@ -25,6 +25,7 @@
             this.btnExport = new System.Windows.Forms.Button();
             this.btnImport = new System.Windows.Forms.Button();
             this.btnExtract = new System.Windows.Forms.Button();
+            this.btnClearMetadata = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // treeViewMetadata
@@ -68,11 +69,22 @@
             this.btnExtract.UseVisualStyleBackColor = true;
             this.btnExtract.Click += new System.EventHandler(this.btnExtract_Click);
             // 
+            // btnClearMetadata
+            // 
+            this.btnClearMetadata.Location = new System.Drawing.Point(469, 132);
+            this.btnClearMetadata.Name = "btnClearMetadata";
+            this.btnClearMetadata.Size = new System.Drawing.Size(162, 26);
+            this.btnClearMetadata.TabIndex = 4;
+            this.btnClearMetadata.Text = "Delete Metadata...";
+            this.btnClearMetadata.UseVisualStyleBackColor = true;
+            this.btnClearMetadata.Click += new System.EventHandler(this.btnClearMetadata_Click);
+            // 
             // MetadataManagerForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(665, 360);
+            this.Controls.Add(this.btnClearMetadata);
             this.Controls.Add(this.btnExtract);
             this.Controls.Add(this.btnImport);
             this.Controls.Add(this.btnExport);
@@ -85,5 +97,7 @@
         }
 
         #endregion
+
+        private System.Windows.Forms.Button btnClearMetadata;
     }
 }

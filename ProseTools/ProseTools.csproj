@@ -603,11 +603,17 @@
     can be found.
   -->
   <ItemGroup>
-    <Compile Include="aiSettingsDlg.cs">
+    <Compile Include="GenAISettingsDlg.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="aiSettingsDlg.Designer.cs">
-      <DependentUpon>aiSettingsDlg.cs</DependentUpon>
+    <Compile Include="GenAISettingsDlg.Designer.cs">
+      <DependentUpon>GenAISettingsDlg.cs</DependentUpon>
+    </Compile>
+    <Compile Include="aiSettingsManagerDlg.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="aiSettingsManagerDlg.Designer.cs">
+      <DependentUpon>aiSettingsManagerDlg.cs</DependentUpon>
     </Compile>
     <Compile Include="AssignCharacterForm.cs">
       <SubType>Form</SubType>
@@ -696,6 +702,7 @@
     <Compile Include="NovelMetaData.cs" />
     <Compile Include="ProseMetaData.cs" />
     <Compile Include="ProseStart.cs" />
+    <Compile Include="ProseToolsSettings.cs" />
     <Compile Include="PTFontDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -745,8 +752,8 @@
       <DependentUpon>WordParsingCount.cs</DependentUpon>
     </Compile>
     <Compile Include="WordStyleInfo.cs" />
-    <EmbeddedResource Include="aiSettingsDlg.resx">
-      <DependentUpon>aiSettingsDlg.cs</DependentUpon>
+    <EmbeddedResource Include="GenAISettingsDlg.resx">
+      <DependentUpon>GenAISettingsDlg.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="AssignCharacterForm.resx">
       <DependentUpon>AssignCharacterForm.cs</DependentUpon>

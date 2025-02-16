@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ProseTools;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -12,15 +13,34 @@ namespace ProseTools
 {
     public partial class SettingsDlg : Form
     {
+        public ProseToolsSettings Settings { get; set; }
+
+        public SettingsDlg(ProseToolsSettings settings)
+        {
+            InitializeComponent();
+            // Copy or reference settings (depending on whether you want to work on a clone).
+            Settings = settings;
+
+            LoadSettings();
+        }
+
         public SettingsDlg()
         {
             InitializeComponent();
-            button1.Enabled = false;
+            btnOK.Enabled = false;
         }
 
-        private void button1_Click(object sender, EventArgs e) => this.DialogResult = DialogResult.OK;
+        private void OK_Click(object sender, EventArgs e)
+        {
+            this.DialogResult = DialogResult.OK;
+            this.Close();
+        }
 
         private void Cancel_Click(object sender, EventArgs e) => this.DialogResult = DialogResult.Cancel;
 
+        private void LoadSettings()
+        {
+        }
     }
 }
+
