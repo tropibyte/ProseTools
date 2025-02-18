@@ -18,6 +18,9 @@
         private System.Windows.Forms.Button btnEdit;
         private System.Windows.Forms.Button btnOK;
         private System.Windows.Forms.Button btnCancel;
+        private System.Windows.Forms.Button btnAddNew;
+        private System.Windows.Forms.Button btnDelete;
+
 
         /// <summary>
         /// Clean up any resources being used.
@@ -42,12 +45,15 @@
         {
             this.tabControlGenAI = new System.Windows.Forms.TabControl();
             this.tabSystem = new System.Windows.Forms.TabPage();
-            this.tabUser = new System.Windows.Forms.TabPage();
             this.lstSystemGenAI = new System.Windows.Forms.ListBox();
+            this.tabUser = new System.Windows.Forms.TabPage();
             this.lstUserGenAI = new System.Windows.Forms.ListBox();
             this.btnEdit = new System.Windows.Forms.Button();
             this.btnOK = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
+            this.btnAddNew = new System.Windows.Forms.Button();
+            this.btnDelete = new System.Windows.Forms.Button();
+            this.btnStdFour = new System.Windows.Forms.Button();
             this.tabControlGenAI.SuspendLayout();
             this.tabSystem.SuspendLayout();
             this.tabUser.SuspendLayout();
@@ -57,19 +63,21 @@
             // 
             this.tabControlGenAI.Controls.Add(this.tabSystem);
             this.tabControlGenAI.Controls.Add(this.tabUser);
-            this.tabControlGenAI.Location = new System.Drawing.Point(12, 12);
+            this.tabControlGenAI.Location = new System.Drawing.Point(11, 10);
+            this.tabControlGenAI.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.tabControlGenAI.Name = "tabControlGenAI";
             this.tabControlGenAI.SelectedIndex = 0;
-            this.tabControlGenAI.Size = new System.Drawing.Size(400, 300);
+            this.tabControlGenAI.Size = new System.Drawing.Size(356, 269);
             this.tabControlGenAI.TabIndex = 0;
             // 
             // tabSystem
             // 
             this.tabSystem.Controls.Add(this.lstSystemGenAI);
-            this.tabSystem.Location = new System.Drawing.Point(4, 29);
+            this.tabSystem.Location = new System.Drawing.Point(4, 25);
+            this.tabSystem.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.tabSystem.Name = "tabSystem";
-            this.tabSystem.Padding = new System.Windows.Forms.Padding(3);
-            this.tabSystem.Size = new System.Drawing.Size(392, 267);
+            this.tabSystem.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.tabSystem.Size = new System.Drawing.Size(348, 240);
             this.tabSystem.TabIndex = 0;
             this.tabSystem.Text = "System";
             this.tabSystem.UseVisualStyleBackColor = true;
@@ -78,19 +86,21 @@
             // 
             this.lstSystemGenAI.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lstSystemGenAI.FormattingEnabled = true;
-            this.lstSystemGenAI.ItemHeight = 20;
-            this.lstSystemGenAI.Location = new System.Drawing.Point(3, 3);
+            this.lstSystemGenAI.ItemHeight = 16;
+            this.lstSystemGenAI.Location = new System.Drawing.Point(3, 2);
+            this.lstSystemGenAI.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.lstSystemGenAI.Name = "lstSystemGenAI";
-            this.lstSystemGenAI.Size = new System.Drawing.Size(386, 261);
+            this.lstSystemGenAI.Size = new System.Drawing.Size(342, 236);
             this.lstSystemGenAI.TabIndex = 0;
             // 
             // tabUser
             // 
             this.tabUser.Controls.Add(this.lstUserGenAI);
-            this.tabUser.Location = new System.Drawing.Point(4, 29);
+            this.tabUser.Location = new System.Drawing.Point(4, 25);
+            this.tabUser.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.tabUser.Name = "tabUser";
-            this.tabUser.Padding = new System.Windows.Forms.Padding(3);
-            this.tabUser.Size = new System.Drawing.Size(392, 267);
+            this.tabUser.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.tabUser.Size = new System.Drawing.Size(348, 211);
             this.tabUser.TabIndex = 1;
             this.tabUser.Text = "User";
             this.tabUser.UseVisualStyleBackColor = true;
@@ -99,17 +109,19 @@
             // 
             this.lstUserGenAI.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lstUserGenAI.FormattingEnabled = true;
-            this.lstUserGenAI.ItemHeight = 20;
-            this.lstUserGenAI.Location = new System.Drawing.Point(3, 3);
+            this.lstUserGenAI.ItemHeight = 16;
+            this.lstUserGenAI.Location = new System.Drawing.Point(3, 2);
+            this.lstUserGenAI.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.lstUserGenAI.Name = "lstUserGenAI";
-            this.lstUserGenAI.Size = new System.Drawing.Size(386, 261);
+            this.lstUserGenAI.Size = new System.Drawing.Size(342, 207);
             this.lstUserGenAI.TabIndex = 0;
             // 
             // btnEdit
             // 
-            this.btnEdit.Location = new System.Drawing.Point(418, 12);
+            this.btnEdit.Location = new System.Drawing.Point(373, 91);
+            this.btnEdit.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.btnEdit.Name = "btnEdit";
-            this.btnEdit.Size = new System.Drawing.Size(100, 30);
+            this.btnEdit.Size = new System.Drawing.Size(118, 24);
             this.btnEdit.TabIndex = 1;
             this.btnEdit.Text = "Configure";
             this.btnEdit.UseVisualStyleBackColor = true;
@@ -117,9 +129,10 @@
             // 
             // btnOK
             // 
-            this.btnOK.Location = new System.Drawing.Point(418, 282);
+            this.btnOK.Location = new System.Drawing.Point(373, 35);
+            this.btnOK.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.btnOK.Name = "btnOK";
-            this.btnOK.Size = new System.Drawing.Size(100, 30);
+            this.btnOK.Size = new System.Drawing.Size(118, 24);
             this.btnOK.TabIndex = 2;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
@@ -127,24 +140,62 @@
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(418, 318);
+            this.btnCancel.Location = new System.Drawing.Point(373, 63);
+            this.btnCancel.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(100, 30);
+            this.btnCancel.Size = new System.Drawing.Size(118, 24);
             this.btnCancel.TabIndex = 3;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
+            // btnAddNew
+            // 
+            this.btnAddNew.Location = new System.Drawing.Point(373, 119);
+            this.btnAddNew.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.btnAddNew.Name = "btnAddNew";
+            this.btnAddNew.Size = new System.Drawing.Size(118, 24);
+            this.btnAddNew.TabIndex = 4;
+            this.btnAddNew.Text = "Add New AI";
+            this.btnAddNew.UseVisualStyleBackColor = true;
+            this.btnAddNew.Click += new System.EventHandler(this.btnAddNew_Click);
+            // 
+            // btnDelete
+            // 
+            this.btnDelete.Location = new System.Drawing.Point(373, 175);
+            this.btnDelete.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.btnDelete.Name = "btnDelete";
+            this.btnDelete.Size = new System.Drawing.Size(118, 24);
+            this.btnDelete.TabIndex = 5;
+            this.btnDelete.Text = "Delete AI";
+            this.btnDelete.UseVisualStyleBackColor = true;
+            this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
+            // 
+            // btnStdFour
+            // 
+            this.btnStdFour.Location = new System.Drawing.Point(373, 147);
+            this.btnStdFour.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.btnStdFour.Name = "btnStdFour";
+            this.btnStdFour.Size = new System.Drawing.Size(118, 24);
+            this.btnStdFour.TabIndex = 4;
+            this.btnStdFour.Text = "Standard 4";
+            this.btnStdFour.UseVisualStyleBackColor = true;
+            this.btnStdFour.Click += new System.EventHandler(this.btnStdFour_Click);
+            // 
             // aiSettingsManagerDlg
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(540, 360);
+            this.ClientSize = new System.Drawing.Size(503, 290);
+            this.Controls.Add(this.btnStdFour);
+            this.Controls.Add(this.btnAddNew);
+            this.Controls.Add(this.btnDelete);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnOK);
             this.Controls.Add(this.btnEdit);
             this.Controls.Add(this.tabControlGenAI);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.Name = "aiSettingsManagerDlg";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "AI Settings Manager";
@@ -152,8 +203,11 @@
             this.tabSystem.ResumeLayout(false);
             this.tabUser.ResumeLayout(false);
             this.ResumeLayout(false);
+
         }
 
         #endregion
+
+        private System.Windows.Forms.Button btnStdFour;
     }
 }

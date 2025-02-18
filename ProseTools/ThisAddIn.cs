@@ -239,7 +239,7 @@ namespace ProseTools
         /// <summary>
         /// Loads the settings from a file.
         /// </summary>
-        private void LoadSettings()
+        public void LoadSettings()
         {
             string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, SettingsFileName);
             if (File.Exists(path))
@@ -264,7 +264,7 @@ namespace ProseTools
         /// <summary>
         /// Saves the settings to a file.
         /// </summary>
-        private void SaveSettings()
+        public void SaveSettings()
         {
             try
             {
@@ -288,6 +288,71 @@ namespace ProseTools
         {
             this.Startup += new System.EventHandler(ThisAddIn_Startup);
             this.Shutdown += new System.EventHandler(ThisAddIn_Shutdown);
+        }
+
+        internal List<GenAIConfig> GetGetAIConfigs(string user)
+        {
+            if(Settings == null)
+            {
+                return new List<GenAIConfig>();
+            }
+            else if (string.Equals(user, "SYSTEM", StringComparison.OrdinalIgnoreCase))
+            {
+                return Settings.UserSettingsList
+                       .FirstOrDefault(us => string.Equals(us.Username, "SYSTEM", StringComparison.OrdinalIgnoreCase))
+                       ?.GenAIConfigs ?? new List<GenAIConfig>();
+            }
+            else if (string.Equals(user, "user", StringComparison.OrdinalIgnoreCase))
+            {
+                string currentUsername = Environment.UserName;
+                return Settings.UserSettingsList
+                       .FirstOrDefault(us => string.Equals(us.Username, currentUsername, StringComparison.OrdinalIgnoreCase))
+                       ?.GenAIConfigs ?? new List<GenAIConfig>();
+            }
+            else
+            {
+                return Settings.UserSettingsList
+                       .FirstOrDefault(us => string.Equals(us.Username, user, StringComparison.OrdinalIgnoreCase))
+                       ?.GenAIConfigs ?? new List<GenAIConfig>();
+            }
+
+  //          return new List<GenAIConfig>();
+        }
+
+        public GenAIConfig GetCurrentGenAIConfig()
+        {
+            // Read the selected GenAI service from the ribbon drop‑down.
+            string selectedServiceName = Globals.Ribbons.ProseToolsRibbon.genAIDropDown.SelectedItem?.Label;
+            if (string.IsNullOrWhiteSpace(selectedServiceName))
+            {
+                throw new InvalidOperationException("No GenAI service selected.");
+            }
+
+            // First, check in the current user's settings.
+            var userConfigs = GetGetAIConfigs("user");
+            GenAIConfig config = userConfigs.FirstOrDefault(cfg =>
+                string.Equals(cfg.Name, selectedServiceName, StringComparison.OrdinalIgnoreCase));
+
+            // If not found, check in the system settings.
+            if (config == null)
+            {
+                var systemConfigs = GetGetAIConfigs("SYSTEM");
+                config = systemConfigs.FirstOrDefault(cfg =>
+                    string.Equals(cfg.Name, selectedServiceName, StringComparison.OrdinalIgnoreCase));
+            }
+
+            // If still not found, return an empty config.
+            if (config == null)
+            {
+                return new GenAIConfig();
+            }
+
+            return config;
+        }
+
+        internal GenAIConfig GetUsableGenAIConfig(string selectedService)
+        {
+            throw new NotImplementedException();
         }
 
         #endregion

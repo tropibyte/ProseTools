@@ -237,7 +237,8 @@ namespace ProseTools
                     {
                         Title = dialog.NodeTitle,
                         Details = dialog.NodeDetails,
-                        Notes = dialog.NodeNotes
+                        Notes = dialog.NodeNotes,
+                        Attributes = dialog.NodeAttributes
                     };
 
                     // If a node is selected, add as a child of that node.
@@ -286,7 +287,7 @@ namespace ProseTools
             }
 
             // Open the dialog for editing, passing the parent node name.
-            using (var dialog = new AddNodeDlg(selectedNode.Title, selectedNode.Details, selectedNode.Notes, parentName))
+            using (var dialog = new AddNodeDlg(selectedNode.Title, selectedNode.Details, selectedNode.Notes, selectedNode.Attributes, parentName))
             {
                 dialog.Text = "Modify Node"; // Optional: set a specific title for editing.
                 if (dialog.ShowDialog(this) == DialogResult.OK)
@@ -295,8 +296,9 @@ namespace ProseTools
                     selectedNode.Title = dialog.NodeTitle;
                     selectedNode.Details = dialog.NodeDetails;
                     selectedNode.Notes = dialog.NodeNotes;
+                    selectedNode.Attributes = dialog.NodeAttributes;
                     PopulateTreeView();
-                    BuildNodeDetailsText(selectedNode);
+                    richTextBoxDetails.Text = BuildNodeDetailsText(selectedNode);
                 }
             }
         }

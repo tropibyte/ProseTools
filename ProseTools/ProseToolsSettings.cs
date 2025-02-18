@@ -9,46 +9,119 @@ namespace ProseTools
 {
     public class ProseToolsSettings
     {
-        readonly XNamespace ns = "urn:prosetools:prosetoolssettings"; // or reuse your metadata namespace if you prefer
+        readonly XNamespace ns = "urn:prosetools:prosetoolssettings";
 
-        public SystemSettings SystemSettings { get; set; }
-        public UserSettings UserSettings { get; set; }
+        // A list where index 0 is the "system" settings, and the rest are user settings.
+        public List<UserSettings> UserSettingsList { get; set; }
+
         public DocumentSettings DocumentSettings { get; set; }
 
         public ProseToolsSettings()
         {
-            SystemSettings = new SystemSettings();
-            UserSettings = new UserSettings();
+            // Initialize the list and ensure the system settings exist as the first element.
+            UserSettingsList = new List<UserSettings>();
+            if (!UserSettingsList.Any())
+            {
+                UserSettingsList.Add(new UserSettings { Username = "SYSTEM" });
+            }
             DocumentSettings = new DocumentSettings();
         }
+
         public XElement ToXML()
         {
-            return new XElement(ns + "ProseToolsSettings"
+            return new XElement(ns + "ProseToolsSettings",
+                new XElement(ns + "UserSettingsList",
+                    UserSettingsList.Select(us => us.ToXML())
+                ),
+                new XElement(ns + "DocumentSettings",
+                    DocumentSettings.ToXML().Elements() // flatten the inner DocumentSettings elements
+                )
             );
         }
 
         internal static ProseToolsSettings FromXML(XElement xml)
         {
-            //throw new NotImplementedException();
-            return new ProseToolsSettings();
-        }
-    }
+            XNamespace ns = "urn:prosetools:prosetoolssettings";
+            ProseToolsSettings settings = new ProseToolsSettings();
 
-    public class SystemSettings
-    {
-        public List<GenAIConfig> GenAIConfigs { get; set; }
-        public SystemSettings()
-        {
-            GenAIConfigs = new List<GenAIConfig>();
+            var userSettingsListElement = xml.Element(ns + "UserSettingsList");
+            if (userSettingsListElement != null)
+            {
+                settings.UserSettingsList = userSettingsListElement.Elements(ns + "UserSettings")
+                    .Select(UserSettings.FromXML)
+                    .ToList();
+            }
+            else
+            {
+                // If missing, initialize with a system settings entry.
+                settings.UserSettingsList = new List<UserSettings> { new UserSettings { Username = "SYSTEM" } };
+            }
+
+            var docSettingsElement = xml.Element(ns + "DocumentSettings");
+            if (docSettingsElement != null)
+            {
+                settings.DocumentSettings = DocumentSettings.FromXML(docSettingsElement);
+            }
+            else
+            {
+                settings.DocumentSettings = new DocumentSettings();
+            }
+
+            return settings;
         }
     }
 
     public class UserSettings
     {
+        readonly XNamespace ns = "urn:prosetools:prosetoolssettings";
+
         public List<GenAIConfig> GenAIConfigs { get; set; }
+        public string Username { get; set; } = string.Empty;
+        public Dictionary<string, string> Attributes { get; set; }  // Optional extra attributes
+
         public UserSettings()
         {
             GenAIConfigs = new List<GenAIConfig>();
+            Attributes = new Dictionary<string, string>();
+        }
+
+        public XElement ToXML()
+        {
+            return new XElement(ns + "UserSettings",
+                new XElement(ns + "Username", Username),
+                new XElement(ns + "GenAIConfigs",
+                    GenAIConfigs.Select(cfg => cfg.ToXML())
+                ),
+                new XElement(ns + "Attributes",
+                    Attributes.Select(attr => new XElement(ns + attr.Key, attr.Value))
+                )
+            );
+        }
+
+        public static UserSettings FromXML(XElement element)
+        {
+            XNamespace ns = "urn:prosetools:prosetoolssettings";
+            UserSettings user = new UserSettings
+            {
+                Username = element.Element(ns + "Username")?.Value ?? string.Empty
+            };
+
+            var genAIsElement = element.Element(ns + "GenAIConfigs");
+            if (genAIsElement != null)
+            {
+                user.GenAIConfigs = genAIsElement.Elements(ns + "GenAIConfig")
+                    .Select(GenAIConfig.FromXML)
+                    .ToList();
+            }
+
+            var attributesElement = element.Element(ns + "Attributes");
+            if (attributesElement != null)
+            {
+                user.Attributes = attributesElement.Elements()
+                    .ToDictionary(x => x.Name.LocalName, x => x.Value);
+            }
+
+            return user;
         }
     }
 
@@ -56,13 +129,8 @@ namespace ProseTools
     {
         public bool ShowPageNumbers { get; set; } = true;
         public string DefaultChapterStyle { get; set; } = "Prose Chapter";
-        public string LastUsedTemplate { get; set; }
-        public string LastUsedGenAI { get; set; }
-        public DocumentSettings()
-        {
-            LastUsedTemplate = string.Empty;
-            LastUsedGenAI = string.Empty;
-        }
+        public string LastUsedTemplate { get; set; } = string.Empty;
+        public string LastUsedGenAI { get; set; } = string.Empty;
 
         public XElement ToXML()
         {

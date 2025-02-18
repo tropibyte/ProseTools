@@ -18,6 +18,11 @@ namespace ProseTools
 
         private void ProseToolsRibbon_Load(object sender, RibbonUIEventArgs e)
         {
+            if (Globals.ThisAddIn.Settings == null)
+            {
+                Globals.ThisAddIn.LoadSettings();
+            }
+
             PopulateGenAIDropDown();
             PopulateProseTypeDropDown();
             SetGroupControlsEnabled(Globals.ThisAddIn.IsProseToolsTaskPaneVisible());
@@ -26,17 +31,41 @@ namespace ProseTools
 
         private void PopulateGenAIDropDown()
         {
-            // Clear any existing items in the dropdown
+            // Create a dictionary keyed by service name (case-insensitive)
+            Dictionary<string, GenAIConfig> combinedConfigs = new Dictionary<string, GenAIConfig>(StringComparer.OrdinalIgnoreCase);
+            var systemGenAIConfigs = Globals.ThisAddIn.GetGetAIConfigs("SYSTEM");
+            var userGenAIConfigs = Globals.ThisAddIn.GetGetAIConfigs("User");
+
+            // Add all system configurations.
+            foreach (var config in systemGenAIConfigs)
+            {
+                if (!combinedConfigs.ContainsKey(config.Name))
+                    combinedConfigs.Add(config.Name, config);
+            }
+
+            // Then add user configurations, which override duplicates.
+            foreach (var config in userGenAIConfigs)
+            {
+                combinedConfigs[config.Name] = config;
+            }
+
+            // Clear existing items in the dropdown.
             genAIDropDown.Items.Clear();
 
-            // Add the four GenAI options
-            genAIDropDown.Items.Add(CreateDropDownItem("ChatGPT"));
-            genAIDropDown.Items.Add(CreateDropDownItem("CoPilot"));
-            genAIDropDown.Items.Add(CreateDropDownItem("Claude"));
-            genAIDropDown.Items.Add(CreateDropDownItem("Gemini"));
+            // Add each configuration as a dropdown item.
+            foreach (var config in combinedConfigs.Values)
+            {
+                var item = CreateDropDownItem(config.Name);
+                // Optionally, if you want to keep a mapping to the actual GenAIConfig,
+                // you could store them in a dictionary accessible elsewhere.
+                genAIDropDown.Items.Add(item);
+            }
 
-            // Optionally set a default selection
-            genAIDropDown.SelectedItemIndex = 0; // Default to ChatGPT
+            // Optionally set a default selection.
+            if (genAIDropDown.Items.Count > 0)
+            {
+                genAIDropDown.SelectedItemIndex = 0;
+            }
         }
 
         private void PopulateProseTypeDropDown()
@@ -325,16 +354,14 @@ namespace ProseTools
 
         private void aiSettingsButton_Click(object sender, RibbonControlEventArgs e)
         {
-            string selectedText = genAIDropDown.SelectedItem != null
-                ? genAIDropDown.SelectedItem.Label
-                : genAIDropDown.Items[0].Label;
             aiSettingsManagerDlg aiSettingsMgrDlg = new aiSettingsManagerDlg();
             if (aiSettingsMgrDlg.ShowDialog() == DialogResult.OK)
             {
-                ;
+                // Repopulate the GenAI dropdown.
+                PopulateGenAIDropDown();
             }
-        }        
-        
+        }
+
         private void Outline_Click(object sender, RibbonControlEventArgs e)
         {
             if (Globals.ThisAddIn.Application.ActiveDocument == null)
@@ -487,5 +514,58 @@ namespace ProseTools
             MetadataManagerForm metadataManagerForm = new MetadataManagerForm();
             metadataManagerForm.ShowDialog();
         }
+
+        private void queryGenAIButton_Click(object sender, RibbonControlEventArgs e)
+        {
+            MessageBox.Show("AI Query is currently unavailable.", "AI Query", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            return;
+        }
+        /*
+        {
+        // This is the new method to handle the AI Query button click.
+        // Get the selected GenAI service from the dropdown.
+            string selectedService = genAIDropDown.SelectedItem?.Label;
+            if (string.IsNullOrEmpty(selectedService))
+            {
+                MessageBox.Show("No GenAI service selected. Please select a service from the dropdown.", "Configuration Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            // Retrieve the GenAIConfig for the selected service.
+            GenAIConfig config = Globals.ThisAddIn.GetCurrentGenAIConfig();
+            if (config == null)
+            {
+                MessageBox.Show("The selected GenAI service configuration was not found. Please check your settings.", "Configuration Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            // Validate required authentication details.
+            bool credentialsProvided = false;
+            if (config.UseApiKey)
+            {
+                credentialsProvided = !string.IsNullOrWhiteSpace(config.ApiKey) &&
+                                      !string.IsNullOrWhiteSpace(config.ModelName) &&
+                                      !string.IsNullOrWhiteSpace(config.AuthUrl);
+            }
+            else
+            {
+                credentialsProvided = !string.IsNullOrWhiteSpace(config.Username) &&
+                                      !string.IsNullOrWhiteSpace(config.Password);
+            }
+
+            if (!credentialsProvided)
+            {
+                MessageBox.Show("The configuration for the selected GenAI service is incomplete. Please update your settings.",
+                    "Configuration Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            AIQueryDlg queryDlg = new AIQueryDlg();
+            if(queryDlg.ShowDialog() == DialogResult.OK)
+            {
+                ;
+            }
+        }
+    }
+        */
     }
 }

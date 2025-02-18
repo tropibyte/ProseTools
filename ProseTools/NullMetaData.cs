@@ -23,8 +23,7 @@ namespace ProseTools
             // Return a minimal XML element indicating no metadata
             XNamespace ns = MetadataNamespace;
             return new XElement(ns + "ProseMetaData",
-                new XElement(ns + "ProseType", Name),
-                new XElement(ns + "DocumentSettings", DocumentSettings.ToXML())
+                new XElement(ns + "ProseType", Name)
             );
         }
 

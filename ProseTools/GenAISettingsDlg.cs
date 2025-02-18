@@ -22,7 +22,15 @@ namespace ProseTools
 
         private void GenAISettingsDlg_Load(object sender, EventArgs e)
         {
+            // Set the label with the AI name.
             labelGenAI.Text = Config.Name;
+
+            // Populate text fields with values from Config.
+            txtUsername.Text = Config.Username;
+            txtApiKey.Text = Config.ApiKey;
+            txtAuthUrl.Text = Config.AuthUrl;
+            txtModelName.Text = Config.ModelName;
+            chkUseApiKey.Checked = Config.UseApiKey;
         }
 
         // OK button click event

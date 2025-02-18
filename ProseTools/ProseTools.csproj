@@ -29,8 +29,12 @@
     <TargetFrameworkVersion>v4.8.1</TargetFrameworkVersion>
     <DefineConstants>VSTO40;UseOfficeInterop</DefineConstants>
     <ResolveComReferenceSilent>true</ResolveComReferenceSilent>
+    <IsWebBootstrapper>False</IsWebBootstrapper>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+    <TargetFrameworkProfile />
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <PublishUrl>publish\</PublishUrl>
+    <PublishUrl>C:\Users\tarie\Desktop\ProseTools\</PublishUrl>
     <InstallUrl />
     <TargetCulture>en</TargetCulture>
     <ApplicationVersion>1.0.0.0</ApplicationVersion>
@@ -38,21 +42,17 @@
     <UpdateEnabled>true</UpdateEnabled>
     <UpdateInterval>7</UpdateInterval>
     <UpdateIntervalUnits>days</UpdateIntervalUnits>
-    <IsWebBootstrapper>False</IsWebBootstrapper>
     <ProductName>ProseTools</ProductName>
     <PublisherName />
     <SupportUrl />
     <FriendlyName>ProseTools</FriendlyName>
     <OfficeApplicationDescription />
     <LoadBehavior>3</LoadBehavior>
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <ItemGroup>
-    <BootstrapperPackage Include=".NETFramework,Version=v4.7.2">
+    <BootstrapperPackage Include=".NETFramework,Version=v4.8.1">
       <Visible>False</Visible>
-      <ProductName>Microsoft .NET Framework 4.7.2 %28x86 and x64%29</ProductName>
+      <ProductName>Microsoft .NET Framework 4.8.1 %28x86 and x64%29</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
     <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
@@ -327,6 +327,9 @@
     <Reference Include="Python.Runtime, Version=3.0.5.0, Culture=neutral, PublicKeyToken=5000fea6cba702dd, processorArchitecture=MSIL">
       <HintPath>..\packages\pythonnet.3.0.5\lib\netstandard2.0\Python.Runtime.dll</HintPath>
     </Reference>
+    <Reference Include="RestSharp, Version=112.1.0.0, Culture=neutral, PublicKeyToken=598062e77f915f75, processorArchitecture=MSIL">
+      <HintPath>..\packages\RestSharp.112.1.0\lib\net48\RestSharp.dll</HintPath>
+    </Reference>
     <Reference Include="Serilog, Version=4.2.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
       <HintPath>..\packages\Serilog.4.2.0\lib\net471\Serilog.dll</HintPath>
     </Reference>
@@ -337,7 +340,7 @@
       <HintPath>..\packages\Serilog.Sinks.File.6.0.0\lib\net471\Serilog.Sinks.File.dll</HintPath>
     </Reference>
     <Reference Include="SharpCompress, Version=0.39.0.0, Culture=neutral, PublicKeyToken=afb0a02973931d96, processorArchitecture=MSIL">
-      <HintPath>..\packages\SharpCompress.0.39.0\lib\netstandard2.0\SharpCompress.dll</HintPath>
+      <HintPath>..\packages\SharpCompress.0.39.0\lib\net481\SharpCompress.dll</HintPath>
     </Reference>
     <Reference Include="stanford-ner, Version=4.2.0.2, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Stanford.NLP.NER.4.2.0.2\lib\net461\stanford-ner.dll</HintPath>
@@ -514,6 +517,7 @@
     <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.ValueTuple.4.5.0\lib\net47\System.ValueTuple.dll</HintPath>
     </Reference>
+    <Reference Include="System.Web" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
@@ -603,6 +607,25 @@
     can be found.
   -->
   <ItemGroup>
+    <Compile Include="AddStandard4GenAIDlg.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AddStandard4GenAIDlg.Designer.cs">
+      <DependentUpon>AddStandard4GenAIDlg.cs</DependentUpon>
+    </Compile>
+    <Compile Include="AIQueryDlg.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AIQueryDlg.Designer.cs">
+      <DependentUpon>AIQueryDlg.cs</DependentUpon>
+    </Compile>
+    <Compile Include="AttributeManagerDlg.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AttributeManagerDlg.Designer.cs">
+      <DependentUpon>AttributeManagerDlg.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GenAIService.cs" />
     <Compile Include="GenAISettingsDlg.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -752,6 +775,15 @@
       <DependentUpon>WordParsingCount.cs</DependentUpon>
     </Compile>
     <Compile Include="WordStyleInfo.cs" />
+    <EmbeddedResource Include="AddStandard4GenAIDlg.resx">
+      <DependentUpon>AddStandard4GenAIDlg.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="aiSettingsManagerDlg.resx">
+      <DependentUpon>aiSettingsManagerDlg.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="AttributeManagerDlg.resx">
+      <DependentUpon>AttributeManagerDlg.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="GenAISettingsDlg.resx">
       <DependentUpon>GenAISettingsDlg.cs</DependentUpon>
     </EmbeddedResource>
@@ -854,6 +886,7 @@
     <Compile Include="ThisAddIn.cs">
       <SubType>Code</SubType>
     </Compile>
+    <None Include="ProseTools_1_TemporaryKey.pfx" />
     <None Include="ProseTools_TemporaryKey.pfx" />
     <None Include="protos\google\api\annotations.proto" />
     <None Include="protos\google\api\auth.proto" />
@@ -935,8 +968,10 @@
     <None Include="outline_icon.png" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="ILLink\ILLink.Descriptors.LibraryBuild.xml" />
     <None Include="metadata.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="ILLink\ILLink.Descriptors.LibraryBuild.xml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -946,10 +981,10 @@
     <SignManifests>true</SignManifests>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestKeyFile>ProseTools_TemporaryKey.pfx</ManifestKeyFile>
+    <ManifestKeyFile>ProseTools_1_TemporaryKey.pfx</ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>1E561A926973638FF9B6244516A4BD049FB7756A</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>8E8551E2B33D8B23D1F31862F4DDDCA5B6240C6D</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
@@ -966,6 +1001,9 @@
     <DebugType>pdbonly</DebugType>
     <PlatformTarget>x64</PlatformTarget>
     <LangVersion>7.3</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>false</SignAssembly>
   </PropertyGroup>
   <!-- Include the build rules for a C# project. -->
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
@@ -988,9 +1026,9 @@
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\NETStandard.Library.2.0.3\build\netstandard2.0\NETStandard.Library.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\NETStandard.Library.2.0.3\build\netstandard2.0\NETStandard.Library.targets'))" />
-    <Error Condition="!Exists('..\packages\Grpc.Core.2.46.6\build\net45\Grpc.Core.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Grpc.Core.2.46.6\build\net45\Grpc.Core.targets'))" />
     <Error Condition="!Exists('..\packages\Google.Api.CommonProtos.2.16.0\build\Google.Api.CommonProtos.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Google.Api.CommonProtos.2.16.0\build\Google.Api.CommonProtos.targets'))" />
+    <Error Condition="!Exists('..\packages\Grpc.Core.2.46.6\build\net45\Grpc.Core.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Grpc.Core.2.46.6\build\net45\Grpc.Core.targets'))" />
   </Target>
-  <Import Project="..\packages\Grpc.Core.2.46.6\build\net45\Grpc.Core.targets" Condition="Exists('..\packages\Grpc.Core.2.46.6\build\net45\Grpc.Core.targets')" />
   <Import Project="..\packages\Google.Api.CommonProtos.2.16.0\build\Google.Api.CommonProtos.targets" Condition="Exists('..\packages\Google.Api.CommonProtos.2.16.0\build\Google.Api.CommonProtos.targets')" />
+  <Import Project="..\packages\Grpc.Core.2.46.6\build\net45\Grpc.Core.targets" Condition="Exists('..\packages\Grpc.Core.2.46.6\build\net45\Grpc.Core.targets')" />
 </Project>

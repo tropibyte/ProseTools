@@ -134,6 +134,7 @@ namespace ProseTools
             // 
             this.queryGenAIButton.Label = "Query...";
             this.queryGenAIButton.Name = "queryGenAIButton";
+            this.queryGenAIButton.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.queryGenAIButton_Click);
             // 
             // aiSettings
             // 

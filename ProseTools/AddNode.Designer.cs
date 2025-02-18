@@ -37,6 +37,7 @@
             this.Ok = new System.Windows.Forms.Button();
             this.cancel = new System.Windows.Forms.Button();
             this.labelParentNode = new System.Windows.Forms.Label();
+            this.btnManageAttributes = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // txtTitle
@@ -117,11 +118,22 @@
             this.labelParentNode.TabIndex = 1;
             this.labelParentNode.Text = "Parent Node: ";
             // 
+            // btnManageAttributes
+            // 
+            this.btnManageAttributes.Location = new System.Drawing.Point(72, 269);
+            this.btnManageAttributes.Name = "btnManageAttributes";
+            this.btnManageAttributes.Size = new System.Drawing.Size(303, 23);
+            this.btnManageAttributes.TabIndex = 3;
+            this.btnManageAttributes.Text = "Manage Attributes...";
+            this.btnManageAttributes.UseVisualStyleBackColor = true;
+            this.btnManageAttributes.Click += new System.EventHandler(this.btnManageAttributes_Click);
+            // 
             // AddNodeDlg
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(485, 280);
+            this.ClientSize = new System.Drawing.Size(485, 299);
+            this.Controls.Add(this.btnManageAttributes);
             this.Controls.Add(this.cancel);
             this.Controls.Add(this.Ok);
             this.Controls.Add(this.label3);
@@ -149,5 +161,6 @@
         private System.Windows.Forms.Button Ok;
         private System.Windows.Forms.Button cancel;
         private System.Windows.Forms.Label labelParentNode;
+        private System.Windows.Forms.Button btnManageAttributes;
     }
 }

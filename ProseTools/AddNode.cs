@@ -15,8 +15,10 @@ namespace ProseTools
         public string NodeTitle { get; private set; }
         public string NodeDetails { get; private set; }
         public string NodeNotes { get; private set; }
+        public Dictionary<string, string> NodeAttributes { get; set; }
 
-        public AddNodeDlg(string title, string details, string notes, string parentName)
+        public AddNodeDlg(string title, string details, string notes, Dictionary<string, string> attributes, string parentName)
+
         {
             InitializeComponent();
             txtTitle.Text = title;
@@ -24,6 +26,7 @@ namespace ProseTools
             txtNotes.Text = notes;
             Text = "Modify Node";
             labelParentNode.Text = "ParentNode: " + parentName;
+            NodeAttributes = attributes;
         }
 
         public AddNodeDlg(string parentName)
@@ -31,6 +34,7 @@ namespace ProseTools
             InitializeComponent();
             Text = "Add Node";
             labelParentNode.Text = "ParentNode: " + parentName;
+            NodeAttributes = new Dictionary<string, string>();
         }
 
         private void Ok_Click(object sender, EventArgs e)
@@ -47,6 +51,19 @@ namespace ProseTools
         {
             this.DialogResult = DialogResult.Cancel;
             this.Close();
+        }
+
+        private void btnManageAttributes_Click(object sender, EventArgs e)
+        {
+            // Open the AttributeManagerDlg with current attributes.
+            using (var dlg = new AttributeManagerDlg(this.NodeAttributes))
+            {
+                if (dlg.ShowDialog(this) == DialogResult.OK)
+                {
+                    // Update the NodeAttributes with changes from the manager.
+                    this.NodeAttributes = dlg.Attributes;
+                }
+            }
         }
     }
 }
